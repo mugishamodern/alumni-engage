@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Admin Dashboard</h1>
+    
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <div class="card text-center bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Users</h5>
+                    <h2 class="card-text">{{ user_count }}</h2>
+                    <a href="{{ url_for('admin.manage_users') }}" class="text-white">Manage Users</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Events</h5>
+                    <h2 class="card-text">{{ event_count }}</h2>
+                    <a href="{{ url_for('admin.manage_events') }}" class="text-white">Manage Events</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Jobs</h5>
+                    <h2 class="card-text">{{ job_count }}</h2>
+                    <a href="{{ url_for('admin.manage_jobs') }}" class="text-white">Manage Jobs</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Testimonials</h5>
+                    <h2 class="card-text">{{ testimonial_count }}</h2>
+                    <a href="{{ url_for('admin.manage_testimonials') }}" class="text-dark">Manage Testimonials</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-purple text-white">
+                    <h5 class="mb-0">Recent Users</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for user in recent_users %}
+                        <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" 
+                           class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ user.first_name }} {{ user.last_name }}</h6>
+                                <small>{{ user.created_at|time_ago }}</small>
+                            </div>
+                            <p class="mb-1">{{ user.email }}</p>
+                            <small>Joined: {{ user.created_at.strftime('%b %d, %Y') }}</small>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-purple text-white">
+                    <h5 class="mb-0">Pending Approvals</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="{{ url_for('admin.manage_jobs') }}?status=pending" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Job Postings
+                            <span class="badge bg-primary rounded-pill">{{ pending_jobs }}</span>
+                        </a>
+                        <a href="{{ url_for('admin.manage_testimonials') }}?status=pending" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Testimonials
+                            <span class="badge bg-primary rounded-pill">{{ pending_testimonials }}</span>
+                        </a>
+                        <a href="{{ url_for('admin.contact_submissions') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Contact Messages
+                            <span class="badge bg-primary rounded-pill">{{ unread_contacts }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-purple text-white">
+                    <h5 class="mb-0">Upcoming Events</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for event in upcoming_events %}
+                        <a href="{{ url_for('events.event_detail', event_id=event.id) }}" 
+                           class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ event.title }}</h6>
+                                <small>{{ event.event_date|time_ago }}</small>
+                            </div>
+                            <p class="mb-1">
+                                <i class="fas fa-calendar-alt me-1"></i> 
+                                {{ event.event_date.strftime('%b %d, %Y') }} at 
+                                {{ event.event_date.strftime('%I:%M %p') }}
+                            </p>
+                            <small>{{ event.venue }}</small>
+                        </a>
+                        {% else %}
+                        <div class="list-group-item">
+                            <p class="mb-0 text-muted">No upcoming events</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-purple text-white">
+                    <h5 class="mb-0">System Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6>Database</h6>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-success" style="width: 25%">25%</div>
+                        </div>
+                        <small>12.5 MB / 50 MB used</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Active Users (Last 30 days)</h6>
+                        <p class="display-6">{{ active_users }}</p>
+                    </div>
+                    
+                    <div>
+                        <h6>Recent Errors</h6>
+                        {% if recent_errors %}
+                        <ul class="list-group">
+                            {% for error in recent_errors %}
+                            <li class="list-group-item list-group-item-danger">
+                                <small>{{ error.timestamp.strftime('%b %d, %I:%M %p') }} - {{ error.message|truncate(50) }}</small>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="text-success mb-0"><i class="fas fa-check-circle"></i> No recent errors</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,425 @@
+{% extends "base.html" %}
+
+{% block title %}Alumni Connect - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); color: #1a1a1a; padding: 40px 0; border-bottom: 1px solid #e2e8f0;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 60px;">
+            <div style="flex: 1; min-width: 300px;">
+                <h1 style="font-size: 3.5rem; font-weight: 600; margin-bottom: 24px; line-height: 1.1; color: #1a1a1a;">Connect, <span style="color: #8b5cf6;">Network, </span>and Grow.</h1>
+                <p style="font-size: 1.1rem; margin-bottom: 40px; color: #64748b; line-height: 1.7; max-width: 500px;">Join our vibrant alumni community and unlock endless opportunities for professional growth, networking, and lifelong connections.</p>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    {% if not current_user.is_authenticated %}
+                        <a href="{{ url_for('auth.register') }}" style="background: #8b5cf6; color: white; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.2s ease; letter-spacing: 0.5px; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);">
+                            JOIN NOW
+                        </a>
+                        <a href="{{ url_for('auth.login') }}" style="background: transparent; color: #1a1a1a; padding: 16px 32px; text-decoration: none; font-weight: 500; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.2s ease; letter-spacing: 0.5px;">
+                            LOGIN
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('main.dashboard') }}" style="background: #8b5cf6; color: white; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.2s ease; letter-spacing: 0.5px; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);">
+                            DASHBOARD
+                        </a>
+                        <a href="{{ url_for('directory.list') }}" style="background: transparent; color: #1a1a1a; padding: 16px 32px; text-decoration: none; font-weight: 500; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.2s ease; letter-spacing: 0.5px;">
+                            BROWSE ALUMNI
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div style="flex: 1; min-width: 300px; text-align: center;">
+                <div style="background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%); width: 350px; height: 350px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);">
+                    <div style="color: white; text-align: center;">
+                        <div style="font-size: 4rem; margin-bottom: 10px;">👥</div>
+                        <div style="font-size: 1.2rem; font-weight: 500;">Alumni Network</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section style="padding: 80px 0; background: #fafafa;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 60px; text-align: center;">
+            <div style="background: white; padding: 40px 30px; border-radius: 12px; border-top: 4px solid #8b5cf6; transition: transform 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                <div style="background: #ede9fe; color: #8b5cf6; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 1.5rem;">👨‍🎓</div>
+                <h3 style="font-size: 3rem; font-weight: 200; color: #1a1a1a; margin-bottom: 12px;" class="counter" data-target="{{ stats.total_alumni or 2847 }}">{{ stats.total_alumni or 2847 }}</h3>
+                <p style="color: #64748b; font-weight: 500; margin: 0; letter-spacing: 1px; font-size: 0.9rem;">ACTIVE ALUMNI</p>
+            </div>
+            <div style="background: white; padding: 40px 30px; border-radius: 12px; border-top: 4px solid #06b6d4; transition: transform 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                <div style="background: #cffafe; color: #06b6d4; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 1.5rem;">📅</div>
+                <h3 style="font-size: 3rem; font-weight: 200; color: #1a1a1a; margin-bottom: 12px;" class="counter" data-target="{{ stats.total_events or 156 }}">{{ stats.total_events or 156 }}</h3>
+                <p style="color: #64748b; font-weight: 500; margin: 0; letter-spacing: 1px; font-size: 0.9rem;">EVENTS HOSTED</p>
+            </div>
+            <div style="background: white; padding: 40px 30px; border-radius: 12px; border-top: 4px solid #10b981; transition: transform 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                <div style="background: #d1fae5; color: #10b981; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 1.5rem;">💼</div>
+                <h3 style="font-size: 3rem; font-weight: 200; color: #1a1a1a; margin-bottom: 12px;" class="counter" data-target="{{ stats.total_jobs or 428 }}">{{ stats.total_jobs or 428 }}</h3>
+                <p style="color: #64748b; font-weight: 500; margin: 0; letter-spacing: 1px; font-size: 0.9rem;">JOB OPPORTUNITIES</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Latest News Section -->
+<section style="padding: 80px 0; background: white;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 2.5rem; font-weight: 300; color: #1a1a1a; margin-bottom: 20px;">Latest News</h2>
+            <div style="width: 60px; height: 3px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); margin: 0 auto 20px; border-radius: 2px;"></div>
+            <p style="color: #64748b; font-size: 1rem; margin: 0; max-width: 600px; margin: 0 auto;">Stay updated with the latest happenings in our alumni community</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px;">
+            {% if latest_news %}
+                {% for news in latest_news %}
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);" onmouseover="this.style.borderColor='#8b5cf6'; this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(139, 92, 246, 0.15)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(0, 0, 0, 0.05)'">
+                    {% if news.image_url %}
+                    <img src="{{ news.image_url }}" alt="{{ news.title }}" style="width: 100%; height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">📰</div>
+                    {% endif %}
+                    <div style="padding: 30px;">
+                        <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 16px; line-height: 1.4;">{{ news.title }}</h5>
+                        <p style="color: #64748b; line-height: 1.7; margin-bottom: 24px; font-size: 0.95rem;">{{ news.summary or news.content[:150] + '...' }}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">{{ news.created_at.strftime('%B %d, %Y') }}</small>
+                            <a href="{{ url_for('news.detail', id=news.id) }}" style="color: #8b5cf6; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #8b5cf6; border-radius: 6px; transition: all 0.2s ease;" onmouseover="this.style.background='#8b5cf6'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#8b5cf6'">
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Placeholder News Items -->
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                    <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">📰</div>
+                    <div style="padding: 30px;">
+                        <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 16px; line-height: 1.4;">Alumni Annual Gala 2025 Announced</h5>
+                        <p style="color: #64748b; line-height: 1.7; margin-bottom: 24px; font-size: 0.95rem;">Join us for an evening of networking, celebration, and reconnection as we announce our biggest alumni gathering...</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">January 15, 2025</small>
+                            <a href="#" style="color: #8b5cf6; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #8b5cf6; border-radius: 6px; transition: all 0.2s ease;">Read More</a>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                    <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #10b981, #06b6d4); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">🎓</div>
+                    <div style="padding: 30px;">
+                        <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 16px; line-height: 1.4;">New Scholarship Program Launched</h5>
+                        <p style="color: #64748b; line-height: 1.7; margin-bottom: 24px; font-size: 0.95rem;">We're excited to announce our new scholarship program to support current students pursuing excellence in their academic journey...</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">January 12, 2025</small>
+                            <a href="#" style="color: #8b5cf6; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #8b5cf6; border-radius: 6px; transition: all 0.2s ease;">Read More</a>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                    <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #f59e0b, #8b5cf6); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">🚀</div>
+                    <div style="padding: 30px;">
+                        <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 16px; line-height: 1.4;">Alumni Startup Success Stories</h5>
+                        <p style="color: #64748b; line-height: 1.7; margin-bottom: 24px; font-size: 0.95rem;">Celebrating our alumni entrepreneurs who have built successful startups and are making a significant impact in their industries...</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">January 10, 2025</small>
+                            <a href="#" style="color: #8b5cf6; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #8b5cf6; border-radius: 6px; transition: all 0.2s ease;">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div style="text-align: center; margin-top: 50px;">
+            <a href="{{ url_for('news.index') }}" style="background: transparent; color: #8b5cf6; padding: 12px 24px; text-decoration: none; font-weight: 500; border: 2px solid #8b5cf6; border-radius: 8px; transition: all 0.2s ease; letter-spacing: 0.5px;">
+                VIEW ALL NEWS
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Upcoming Events Section -->
+<section style="padding: 80px 0; background: #fafafa;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 2.5rem; font-weight: 300; color: #1a1a1a; margin-bottom: 20px;">Upcoming Events</h2>
+            <div style="width: 60px; height: 3px; background: linear-gradient(135deg, #06b6d4, #10b981); margin: 0 auto 20px; border-radius: 2px;"></div>
+            <p style="color: #64748b; font-size: 1rem; margin: 0; max-width: 600px; margin: 0 auto;">Don't miss these exciting events in our alumni network</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px;">
+            {% if upcoming_events %}
+                {% for event in upcoming_events %}
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);" onmouseover="this.style.borderColor='#06b6d4'; this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(6, 182, 212, 0.15)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(0, 0, 0, 0.05)'">
+                    <div style="display: flex; align-items: flex-start; gap: 25px;">
+                        <div style="background: linear-gradient(135deg, #06b6d4, #10b981); color: white; padding: 20px; border-radius: 12px; text-align: center; min-width: 70px;">
+                            <div style="font-size: 1.5rem; font-weight: 300; line-height: 1;">{{ event.event_date.strftime('%d') }}</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9; margin-top: 4px;">{{ event.event_date.strftime('%b').upper() }}</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px;">{{ event.title }}</h5>
+                            <p style="color: #64748b; line-height: 1.6; margin-bottom: 20px; font-size: 0.95rem;">{{ event.description[:100] + '...' if event.description|length > 100 else event.description }}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">📍 {{ event.venue }}</small>
+                                <a href="#" style="color: #06b6d4; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #06b6d4; border-radius: 6px; transition: all 0.2s ease;" onmouseover="this.style.background='#06b6d4'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#06b6d4'">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Placeholder Events -->
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                    <div style="display: flex; align-items: flex-start; gap: 25px;">
+                        <div style="background: linear-gradient(135deg, #06b6d4, #10b981); color: white; padding: 20px; border-radius: 12px; text-align: center; min-width: 70px;">
+                            <div style="font-size: 1.5rem; font-weight: 300; line-height: 1;">25</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9; margin-top: 4px;">JAN</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px;">Tech Innovation Summit</h5>
+                            <p style="color: #64748b; line-height: 1.6; margin-bottom: 20px; font-size: 0.95rem;">Join industry leaders for an inspiring day of technology trends, innovations, and networking opportunities...</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">📍 Tech Hub, Downtown</small>
+                                <a href="#" style="color: #06b6d4; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #06b6d4; border-radius: 6px; transition: all 0.2s ease;">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                    <div style="display: flex; align-items: flex-start; gap: 25px;">
+                        <div style="background: linear-gradient(135deg, #8b5cf6, #06b6d4); color: white; padding: 20px; border-radius: 12px; text-align: center; min-width: 70px;">
+                            <div style="font-size: 1.5rem; font-weight: 300; line-height: 1;">02</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9; margin-top: 4px;">FEB</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px;">Career Networking Evening</h5>
+                            <p style="color: #64748b; line-height: 1.6; margin-bottom: 20px; font-size: 0.95rem;">Connect with professionals across industries and discover new career opportunities in an elegant setting...</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">📍 Grand Hotel Ballroom</small>
+                                <a href="#" style="color: #06b6d4; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #06b6d4; border-radius: 6px; transition: all 0.2s ease;">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                    <div style="display: flex; align-items: flex-start; gap: 25px;">
+                        <div style="background: linear-gradient(135deg, #10b981, #f59e0b); color: white; padding: 20px; border-radius: 12px; text-align: center; min-width: 70px;">
+                            <div style="font-size: 1.5rem; font-weight: 300; line-height: 1;">15</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9; margin-top: 4px;">FEB</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px;">Mentorship Program Launch</h5>
+                            <p style="color: #64748b; line-height: 1.6; margin-bottom: 20px; font-size: 0.95rem;">Join our mentorship program and connect experienced alumni with recent graduates for career guidance...</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">📍 University Campus</small>
+                                <a href="#" style="color: #06b6d4; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #06b6d4; border-radius: 6px; transition: all 0.2s ease;">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div style="text-align: center; margin-top: 50px;">
+            <a href="{{ url_for('events.event_list') }}" style="background: transparent; color: #06b6d4; padding: 12px 24px; text-decoration: none; font-weight: 500; border: 2px solid #06b6d4; border-radius: 8px; transition: all 0.2s ease; letter-spacing: 0.5px;">
+                VIEW ALL EVENTS
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Job Opportunities Section -->
+<section style="padding: 80px 0; background: white;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 2.5rem; font-weight: 300; color: #1a1a1a; margin-bottom: 20px;">Career Opportunities</h2>
+            <div style="width: 60px; height: 3px; background: linear-gradient(135deg, #10b981, #f59e0b); margin: 0 auto 20px; border-radius: 2px;"></div>
+            <p style="color: #64748b; font-size: 1rem; margin: 0; max-width: 600px; margin: 0 auto;">Discover exciting job opportunities shared by our alumni network</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px;">
+            {% if latest_jobs %}
+                {% for job in latest_jobs %}
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);" onmouseover="this.style.borderColor='#10b981'; this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(16, 185, 129, 0.15)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(0, 0, 0, 0.05)'">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                        <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin: 0; flex: 1; line-height: 1.4;">{{ job.title }}</h5>
+                        <span style="background: #10b981; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 500; white-space: nowrap; margin-left: 15px; letter-spacing: 0.5px;">{{ job.job_type.upper() }}</span>
+                    </div>
+                    <h6 style="color: #10b981; font-weight: 500; margin-bottom: 16px; font-size: 0.95rem;">{{ job.company }}</h6>
+                    <p style="color: #64748b; line-height: 1.6; margin-bottom: 24px; font-size: 0.95rem;">{{ job.description[:120] + '...' if job.description|length > 120 else job.description }}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">📍 {{ job.location or 'Remote' }}</small>
+                        <a href="{{ url_for('jobs.detail', id=job.id) }}" style="color: #10b981; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #10b981; border-radius: 6px; transition: all 0.2s ease;" onmouseover="this.style.background='#10b981'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#10b981'">
+                            Apply Now
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Placeholder Job Opportunities -->
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                        <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin: 0; flex: 1; line-height: 1.4;">Senior Software Engineer</h5>
+                        <span style="background: #10b981; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 500; white-space: nowrap; margin-left: 15px; letter-spacing: 0.5px;">FULL-TIME</span>
+                    </div>
+                    <h6 style="color: #10b981; font-weight: 500; margin-bottom: 16px; font-size: 0.95rem;">Tech Solutions Inc.</h6>
+                    <p style="color: #64748b; line-height: 1.6; margin-bottom: 24px; font-size: 0.95rem;">Join our dynamic team to build innovative software solutions. We're looking for passionate developers with experience in modern technologies...</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">📍 Bugoloobi Close</small>
+                        <a href="#" style="color: #10b981; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #10b981; border-radius: 6px; transition: all 0.2s ease;">Apply Now</a>
+                    </div>
+                </div>
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                        <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin: 0; flex: 1; line-height: 1.4;">Marketing Manager</h5>
+                        <span style="background: #8b5cf6; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 500; white-space: nowrap; margin-left: 15px; letter-spacing: 0.5px;">FULL-TIME</span>
+                    </div>
+                    <h6 style="color: #10b981; font-weight: 500; margin-bottom: 16px; font-size: 0.95rem;">Global Marketing Co.</h6>
+                    <p style="color: #64748b; line-height: 1.6; margin-bottom: 24px; font-size: 0.95rem;">Lead our marketing initiatives and drive brand growth. Perfect opportunity for creative professionals with strategic thinking...</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">📍 Kampala</small>
+                        <a href="#" style="color: #10b981; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #10b981; border-radius: 6px; transition: all 0.2s ease;">Apply Now</a>
+                    </div>
+                </div>
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                        <h5 style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin: 0; flex: 1; line-height: 1.4;">Product Designer</h5>
+                        <span style="background: #06b6d4; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 500; white-space: nowrap; margin-left: 15px; letter-spacing: 0.5px;">CONTRACT</span>
+                    </div>
+                    <h6 style="color: #10b981; font-weight: 500; margin-bottom: 16px; font-size: 0.95rem;">Design Studio Pro</h6>
+                    <p style="color: #64748b; line-height: 1.6; margin-bottom: 24px; font-size: 0.95rem;">Create exceptional user experiences and innovative product designs. Join our creative team and shape the future of digital products...</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <small style="color: #94a3b8; font-weight: 500; font-size: 0.85rem;">📍 Remote</small>
+                        <a href="#" style="color: #10b981; text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 8px 16px; border: 1px solid #10b981; border-radius: 6px; transition: all 0.2s ease;">Apply Now</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div style="text-align: center; margin-top: 50px;">
+            <a href="{{ url_for('jobs.index') }}" style="background: transparent; color: #10b981; padding: 12px 24px; text-decoration: none; font-weight: 500; border: 2px solid #10b981; border-radius: 8px; transition: all 0.2s ease; letter-spacing: 0.5px;">
+                VIEW ALL JOBS
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+{% if testimonials %}
+<section style="padding: 80px 0; background: #fafafa;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 2.5rem; font-weight: 300; color: #1a1a1a; margin-bottom: 20px;">Success Stories</h2>
+            <div style="width: 60px; height: 2px; background: #8b5cf6; margin: 0 auto 20px;"></div>
+            <p style="color: #666; font-size: 1rem; margin: 0; max-width: 600px; margin: 0 auto;">Hear from our alumni about their journey and achievements</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px;">
+            {% for testimonial in testimonials %}
+            <div style="background: white; border: 1px solid #f0f0f0; padding: 30px; transition: border-color 0.2s ease, transform 0.2s ease;" onmouseover="this.style.borderColor='#8b5cf6'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#f0f0f0'; this.style.transform='translateY(0)'">
+                <div style="display: flex; align-items: center; margin-bottom: 24px;">
+                    <img src="{{ testimonial.user.get_profile_image_url() }}" alt="{{ testimonial.user.full_name }}" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 16px; object-fit: cover;">
+                    <div>
+                        <h6 style="font-weight: 600; color: #1a1a1a; margin: 0 0 4px 0; font-size: 0.95rem;">{{ testimonial.user.full_name }}</h6>
+                        <small style="color: #666; font-weight: 500; font-size: 0.85rem;">{{ testimonial.user.current_job_title or 'Alumni' }}</small>
+                    </div>
+                </div>
+                <p style="color: #666; line-height: 1.7; margin-bottom: 24px; font-style: italic; font-size: 0.95rem;">"{{ testimonial.content[:150] + '...' if testimonial.content|length > 150 else testimonial.content }}"</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; gap: 2px;">
+                        {% for i in range(testimonial.rating) %}
+                            <span style="color: #8b5cf6; font-size: 1rem;">★</span>
+                        {% endfor %}
+                    </div>
+                    <small style="color: #999; font-weight: 500; font-size: 0.85rem;">{{ testimonial.created_at.strftime('%B %Y') }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div style="text-align: center; margin-top: 50px;">
+            <a href="{{ url_for('main.testimonials') }}" style="background: transparent; color: #8b5cf6; padding: 12px 24px; text-decoration: none; font-weight: 500; border-bottom: 2px solid #8b5cf6; transition: all 0.2s ease; letter-spacing: 0.5px;">
+                VIEW ALL TESTIMONIALS
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section style="padding: 100px 0; background: #1a1a1a; color: white; text-align: center;">
+    <div style="max-width: 800px; margin: 0 auto; padding: 0 20px;">
+        <h2 style="font-size: 2.5rem; font-weight: 300; margin-bottom: 24px; line-height: 1.2;">Ready to Join Our Alumni Network?</h2>
+        <p style="font-size: 1.1rem; margin-bottom: 40px; color: #ccc; line-height: 1.7; max-width: 600px; margin-left: auto; margin-right: auto;">Connect with fellow alumni, discover new opportunities, and be part of a thriving community that supports your professional journey.</p>
+        {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('auth.register') }}" style="background: #8b5cf6; color: white; padding: 16px 32px; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 1rem; transition: all 0.2s ease; display: inline-block; letter-spacing: 0.5px;">
+                GET STARTED TODAY
+            </a>
+        {% else %}
+            <a href="{{ url_for('directory.list') }}" style="background: #8b5cf6; color: white; padding: 16px 32px; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 1rem; transition: all 0.2s ease; display: inline-block; letter-spacing: 0.5px;">
+                EXPLORE ALUMNI DIRECTORY
+            </a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Counter animation
+    document.addEventListener('DOMContentLoaded', function() {
+        const counters = document.querySelectorAll('.counter');
+        
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const increment = target / 100;
+            let count = 0;
+            
+            const updateCounter = () => {
+                if (count < target) {
+                    count += increment;
+                    counter.textContent = Math.floor(count);
+                    setTimeout(updateCounter, 20);
+                } else {
+                    counter.textContent = target;
+                }
+            };
+            
+            // Start animation when element is in viewport
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        updateCounter();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            });
+            
+            observer.observe(counter);
+        });
+    });
+
+    // Minimal hover effects
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('a[style*="background: #8b5cf6"]');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.background = '#7c3aed';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.background = '#8b5cf6';
+            });
+        });
+
+        // Stats card hover effects
+        const statsCards = document.querySelectorAll('section[style*="background: #fafafa"] div[style*="background: white"]');
+        statsCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+    });
+</script>
+{% endblock %}

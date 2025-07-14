@@ -1,0 +1,94 @@
+{% extends "base.html" %} {% block title %}Edit Profile{% endblock %} {% block
+content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-purple text-white">
+          <h4 class="mb-0">Edit Your Profile</h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="text-center mb-4">
+              <img
+                src="{{ current_user.profile_image or url_for('static', filename='img/default-profile.png') }}"
+                class="profile-image mb-3"
+                id="profile-preview"
+              />
+              <div class="form-group">
+                {{ form.profile_image.label(class="form-label") }} {{
+                form.profile_image(class="form-control") }}
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                {{ form.first_name.label(class="form-label") }} {{
+                form.first_name(class="form-control") }}
+              </div>
+              <div class="col-md-6 mb-3">
+                {{ form.last_name.label(class="form-label") }} {{
+                form.last_name(class="form-control") }}
+              </div>
+            </div>
+
+            <div class="mb-3">
+              {{ form.email.label(class="form-label") }} {{
+              form.email(class="form-control") }}
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                {{ form.graduation_year.label(class="form-label") }} {{
+                form.graduation_year(class="form-control") }}
+              </div>
+              <div class="col-md-6 mb-3">
+                {{ form.degree.label(class="form-label") }} {{
+                form.degree(class="form-control") }}
+              </div>
+            </div>
+
+            <div class="mb-3">
+              {{ form.current_job_title.label(class="form-label") }} {{
+              form.current_job_title(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+              {{ form.location.label(class="form-label") }} {{
+              form.location(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+              {{ form.bio.label(class="form-label") }} {{
+              form.bio(class="form-control", rows=5) }}
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-purple">
+                Update Profile
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Profile image preview
+  document
+    .getElementById("profile_image")
+    .addEventListener("change", function (e) {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("profile-preview").src = e.target.result;
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Alumni Directory{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Alumni Directory</h1>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="q" class="form-control" placeholder="Search by name" value="{{ request.args.get('q', '') }}">
+                </div>
+                <div class="col-md-3">
+                    <input type="number" name="year" class="form-control" placeholder="Graduation Year" value="{{ request.args.get('year', '') }}">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="program" class="form-control" placeholder="Degree Program" value="{{ request.args.get('program', '') }}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-purple w-100">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="row">
+        {% for user in users.items %}
+        <div class="col-md-4 mb-4">
+            <div class="card directory-card h-100">
+                <div class="text-center">
+                    <img src="{{ user.profile_image or url_for('static', filename='img/default-profile.png') }}" 
+                         class="rounded-circle mb-3" width="100" height="100">
+                    <h5>{{ user.first_name }} {{ user.last_name }}</h5>
+                    <p class="text-muted mb-1">
+                        {% if user.graduation_year %}Class of {{ user.graduation_year }}{% endif %}
+                    </p>
+                    <p class="mb-1">
+                        {% if user.degree %}{{ user.degree }}{% endif %}
+                    </p>
+                    <p class="mb-1">
+                        {% if user.current_job_title %}{{ user.current_job_title }}{% endif %}
+                    </p>
+                    <p class="mb-1">
+                        {% if user.location %}<i class="fas fa-map-marker-alt"></i> {{ user.location }}{% endif %}
+                    </p>
+                    <a href="{{ url_for('profile.view', user_id=user.id) }}" class="btn btn-sm btn-outline-purple mt-2">View Profile</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">No alumni found matching your search criteria.</div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    <nav aria-label="Directory pagination">
+        <ul class="pagination justify-content-center">
+            {% if users.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('directory.list', page=users.prev_num, q=request.args.get('q'), year=request.args.get('year'), program=request.args.get('program')) }}">Previous</a>
+            </li>
+            {% endif %}
+            
+            {% for page_num in users.iter_pages() %}
+                {% if page_num %}
+                    <li class="page-item {% if users.page == page_num %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('directory.list', page=page_num, q=request.args.get('q'), year=request.args.get('year'), program=request.args.get('program')) }}">{{ page_num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if users.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('directory.list', page=users.next_num, q=request.args.get('q'), year=request.args.get('year'), program=request.args.get('program')) }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}
