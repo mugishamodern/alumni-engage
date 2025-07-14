@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Alumni Connect{% endblock %}
+
+{% block content %}
+<!-- Login Section -->
+<section style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); min-height: 100vh; padding: 80px 0; display: flex; align-items: center;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
+            <!-- Left Side - Welcome Content -->
+            <div style="text-align: left;">
+                <h1 style="font-size: 3rem; font-weight: 600; margin-bottom: 24px; line-height: 1.1; color: #1a1a1a;">Welcome <span style="color: #8b5cf6;">Back</span></h1>
+                <p style="font-size: 1.1rem; margin-bottom: 40px; color: #64748b; line-height: 1.7; max-width: 450px;">Sign in to your alumni account to access your dashboard, connect with fellow alumni, and discover new opportunities.</p>
+                
+                <!-- Features List -->
+                <div style="margin-bottom: 40px;">
+                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                        <div style="background: #ede9fe; color: #8b5cf6; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">🎯</div>
+                        <span style="color: #1a1a1a; font-weight: 500;">Access your personalized dashboard</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                        <div style="background: #cffafe; color: #06b6d4; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">🤝</div>
+                        <span style="color: #1a1a1a; font-weight: 500;">Connect with alumni worldwide</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div style="background: #d1fae5; color: #10b981; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">💼</div>
+                        <span style="color: #1a1a1a; font-weight: 500;">Discover career opportunities</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Login Form -->
+            <div style="background: white; padding: 50px; border-radius: 16px; box-shadow: 0 20px 40px rgba(139, 92, 246, 0.1); border: 1px solid #e2e8f0;">
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <h2 style="font-size: 2rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px;">Login</h2>
+                    <div style="width: 60px; height: 3px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); margin: 0 auto; border-radius: 2px;"></div>
+                </div>
+
+                <form method="POST" style="width: 100%;">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Username Field -->
+                    <div style="margin-bottom: 24px;">
+                        {{ form.username.label(style="display: block; margin-bottom: 8px; font-weight: 500; color: #1a1a1a; font-size: 0.95rem;") }}
+                        {{ form.username(style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; transition: all 0.2s ease; background: #fafafa;", placeholder="Enter your username") }}
+                        {% for error in form.username.errors %}
+                            <div style="color: #ef4444; font-size: 0.875rem; margin-top: 8px; font-weight: 500;">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Password Field -->
+                    <div style="margin-bottom: 24px;">
+                        {{ form.password.label(style="display: block; margin-bottom: 8px; font-weight: 500; color: #1a1a1a; font-size: 0.95rem;") }}
+                        {{ form.password(style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; transition: all 0.2s ease; background: #fafafa;", placeholder="Enter your password") }}
+                        {% for error in form.password.errors %}
+                            <div style="color: #ef4444; font-size: 0.875rem; margin-top: 8px; font-weight: 500;">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Remember Me Checkbox -->
+                    <div style="margin-bottom: 32px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            {{ form.remember_me(style="width: 18px; height: 18px; accent-color: #8b5cf6;") }}
+                            {{ form.remember_me.label(style="color: #64748b; font-weight: 500; font-size: 0.95rem; cursor: pointer;") }}
+                        </div>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" style="width: 100%; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 16px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.5px; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);">
+                        LOGIN
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div style="display: flex; align-items: center; margin: 32px 0;">
+                    <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                    <span style="padding: 0 16px; color: #94a3b8; font-size: 0.9rem; font-weight: 500;">OR</span>
+                    <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                </div>
+
+                <!-- Register Link -->
+                <div style="text-align: center;">
+                    <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 16px;">Don't have an account?</p>
+                    <a href="{{ url_for('auth.register') }}" style="color: #8b5cf6; text-decoration: none; font-weight: 500; font-size: 0.95rem; padding: 12px 24px; border: 2px solid #8b5cf6; border-radius: 8px; transition: all 0.2s ease; display: inline-block; letter-spacing: 0.5px;">
+                        CREATE ACCOUNT
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form field focus effects
+        const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#8b5cf6';
+                this.style.background = '#ffffff';
+                this.style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.1)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#e2e8f0';
+                this.style.background = '#fafafa';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // Button hover effects
+        const loginButton = document.querySelector('button[type="submit"]');
+        loginButton.addEventListener('mouseenter', function() {
+            this.style.background = 'linear-gradient(135deg, #7c3aed, #6d28d9)';
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 8px 20px rgba(139, 92, 246, 0.4)';
+        });
+        
+        loginButton.addEventListener('mouseleave', function() {
+            this.style.background = 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 4px 14px rgba(139, 92, 246, 0.3)';
+        });
+
+        // Register link hover effect
+        const registerLink = document.querySelector('a[href*="register"]');
+        registerLink.addEventListener('mouseenter', function() {
+            this.style.background = '#8b5cf6';
+            this.style.color = 'white';
+            this.style.transform = 'translateY(-2px)';
+        });
+        
+        registerLink.addEventListener('mouseleave', function() {
+            this.style.background = 'transparent';
+            this.style.color = '#8b5cf6';
+            this.style.transform = 'translateY(0)';
+        });
+
+        // Form validation styling
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const inputs = this.querySelectorAll('input[required]');
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.borderColor = '#ef4444';
+                    input.style.background = '#fef2f2';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

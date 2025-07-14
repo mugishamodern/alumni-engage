@@ -3,84 +3,293 @@
 {% block title %}Alumni Directory{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <h1 class="mb-4">Alumni Directory</h1>
-    
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="GET" class="row g-3">
-                <div class="col-md-4">
-                    <input type="text" name="q" class="form-control" placeholder="Search by name" value="{{ request.args.get('q', '') }}">
+<!-- Alumni Directory Section -->
+<section style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); min-height: 100vh; padding: 80px 0;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        
+        <!-- Header -->
+        <div style="text-align: center; margin-bottom: 50px;">
+            <h1 style="font-size: 3rem; font-weight: 700; background: linear-gradient(135deg, #8b5cf6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px;">Alumni Directory</h1>
+            <p style="font-size: 1.2rem; color: #64748b; font-weight: 400; max-width: 600px; margin: 0 auto;">Connect with fellow alumni and expand your professional network</p>
+        </div>
+
+        <!-- Search Card -->
+        <div style="background: white; border-radius: 20px; padding: 40px; margin-bottom: 40px; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                    🔍
                 </div>
-                <div class="col-md-3">
-                    <input type="number" name="year" class="form-control" placeholder="Graduation Year" value="{{ request.args.get('year', '') }}">
+                <h2 style="font-size: 1.5rem; font-weight: 600; color: #1a1a1a; margin: 0;">Search Alumni</h2>
+            </div>
+            
+            <form method="GET" style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 16px; align-items: end;">
+                <div>
+                    <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 8px; font-size: 0.9rem;">Search by Name</label>
+                    <input type="text" name="q" placeholder="Enter alumni name..." value="{{ request.args.get('q', '') }}" style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.2s ease; background: #f8fafc;">
                 </div>
-                <div class="col-md-3">
-                    <input type="text" name="program" class="form-control" placeholder="Degree Program" value="{{ request.args.get('program', '') }}">
+                
+                <div>
+                    <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 8px; font-size: 0.9rem;">Graduation Year</label>
+                    <input type="number" name="year" placeholder="e.g., 2020" value="{{ request.args.get('year', '') }}" style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.2s ease; background: #f8fafc;">
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-purple w-100">Search</button>
+                
+                <div style="display: none;">
+                    <input type="text" name="program" placeholder="Degree Program" value="{{ request.args.get('program', '') }}" style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.2s ease; background: #f8fafc;">
+                </div>
+                
+                <div>
+                    <button type="submit" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 16px 24px; border: none; border-radius: 12px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3); white-space: nowrap;">
+                        <span>🔍</span> Search
+                    </button>
                 </div>
             </form>
         </div>
-    </div>
-    
-    <div class="row">
-        {% for user in users.items %}
-        <div class="col-md-4 mb-4">
-            <div class="card directory-card h-100">
-                <div class="text-center">
-                    <img src="{{ user.profile_image or url_for('static', filename='img/default-profile.png') }}" 
-                         class="rounded-circle mb-3" width="100" height="100">
-                    <h5>{{ user.first_name }} {{ user.last_name }}</h5>
-                    <p class="text-muted mb-1">
-                        {% if user.graduation_year %}Class of {{ user.graduation_year }}{% endif %}
-                    </p>
-                    <p class="mb-1">
-                        {% if user.degree %}{{ user.degree }}{% endif %}
-                    </p>
-                    <p class="mb-1">
-                        {% if user.current_job_title %}{{ user.current_job_title }}{% endif %}
-                    </p>
-                    <p class="mb-1">
-                        {% if user.location %}<i class="fas fa-map-marker-alt"></i> {{ user.location }}{% endif %}
-                    </p>
-                    <a href="{{ url_for('profile.view', user_id=user.id) }}" class="btn btn-sm btn-outline-purple mt-2">View Profile</a>
+
+        <!-- Alumni Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; margin-bottom: 50px;">
+            {% for user in alumni.items %}
+            <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border: 1px solid #e2e8f0; transition: all 0.2s ease; position: relative; overflow: hidden;">
+                <!-- Decorative gradient top -->
+                <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(135deg, #8b5cf6, #06b6d4);"></div>
+                
+                <!-- User Avatar and Info -->
+                <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px;">
+                    <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.5rem; flex-shrink: 0;">
+                        {{ user.first_name[0] }}{{ user.last_name[0] }}
+                    </div>
+                    
+                    <div style="flex: 1; min-width: 0;">
+                        <h3 style="margin: 0 0 4px 0; font-size: 1.2rem; font-weight: 600; color: #1a1a1a;">
+                            <a href="{{ url_for('profile.view', user_id=user.id) }}" style="color: inherit; text-decoration: none; transition: color 0.2s ease;">
+                                {{ user.first_name }} {{ user.last_name }}
+                            </a>
+                        </h3>
+                        
+                        <p style="margin: 0 0 8px 0; color: #64748b; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                            <span>🎓</span>
+                            {% if user.graduation_year %}Class of {{ user.graduation_year }}{% else %}Class Year N/A{% endif %}
+                        </p>
+                        
+                        {% if user.current_job_title %}
+                        <p style="margin: 0; color: #374151; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+                            <span>💼</span>
+                            {{ user.current_job_title }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Contact Actions -->
+                <div style="display: flex; gap: 12px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+                    <a href="mailto:{{ user.email }}" style="flex: 1; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 12px 16px; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 500; text-decoration: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
+                        <span>📧</span> Email
+                    </a>
+                    
+                    <button disabled style="flex: 1; background: #f1f5f9; color: #94a3b8; padding: 12px 16px; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 500; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                        <span>💬</span> Message
+                    </button>
                 </div>
             </div>
-        </div>
-        {% else %}
-        <div class="col-12">
-            <div class="alert alert-info">No alumni found matching your search criteria.</div>
-        </div>
-        {% endfor %}
-    </div>
-    
-    <!-- Pagination -->
-    <nav aria-label="Directory pagination">
-        <ul class="pagination justify-content-center">
-            {% if users.has_prev %}
-            <li class="page-item">
-                <a class="page-link" href="{{ url_for('directory.list', page=users.prev_num, q=request.args.get('q'), year=request.args.get('year'), program=request.args.get('program')) }}">Previous</a>
-            </li>
-            {% endif %}
-            
-            {% for page_num in users.iter_pages() %}
-                {% if page_num %}
-                    <li class="page-item {% if users.page == page_num %}active{% endif %}">
-                        <a class="page-link" href="{{ url_for('directory.list', page=page_num, q=request.args.get('q'), year=request.args.get('year'), program=request.args.get('program')) }}">{{ page_num }}</a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link">...</span></li>
-                {% endif %}
+            {% else %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: white; border-radius: 16px; border: 2px dashed #e2e8f0;">
+                <div style="width: 80px; height: 80px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 2rem;">
+                    👥
+                </div>
+                <h3 style="font-size: 1.5rem; font-weight: 600; color: #64748b; margin-bottom: 8px;">No Alumni Found</h3>
+                <p style="color: #94a3b8; font-size: 1rem; margin: 0;">Try adjusting your search criteria to find more alumni.</p>
+            </div>
             {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if alumni.pages > 1 %}
+        <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border: 1px solid #e2e8f0;">
+            <nav aria-label="Directory pagination">
+                <ul style="display: flex; justify-content: center; align-items: center; gap: 8px; margin: 0; padding: 0; list-style: none;">
+                    {% if alumni.has_prev %}
+                    <li>
+                        <a href="{{ url_for('directory.list_alumni', page=alumni.prev_num, q=request.args.get('q'), year=request.args.get('year'), program=request.args.get('program')) }}" 
+                           style="display: flex; align-items: center; gap: 6px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; color: #64748b; text-decoration: none; font-weight: 500; transition: all 0.2s ease;">
+                            <span>←</span> Previous
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for page_num in alumni.iter_pages() %}
+                        {% if page_num %}
+                            <li>
+                                <a href="{{ url_for('directory.list_alumni', page=page_num, q=request.args.get('q'), year=request.args.get('year'), program=request.args.get('program')) }}" 
+                                   style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; {% if alumni.page == page_num %}background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);{% else %}background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;{% endif %} border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.2s ease;">
+                                    {{ page_num }}
+                                </a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <span style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; color: #94a3b8; font-weight: 500;">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if alumni.has_next %}
+                    <li>
+                        <a href="{{ url_for('directory.list_alumni', page=alumni.next_num, q=request.args.get('q'), year=request.args.get('year'), program=request.args.get('program')) }}" 
+                           style="display: flex; align-items: center; gap: 6px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; color: #64748b; text-decoration: none; font-weight: 500; transition: all 0.2s ease;">
+                            Next <span>→</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Input focus effects
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#8b5cf6';
+                this.style.background = 'white';
+                this.style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.1)';
+            });
             
-            {% if users.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="{{ url_for('directory.list', page=users.next_num, q=request.args.get('q'), year=request.args.get('year'), program=request.args.get('program')) }}">Next</a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
-</div>
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#e2e8f0';
+                this.style.background = '#f8fafc';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // Search button hover effect
+        const searchButton = document.querySelector('button[type="submit"]');
+        if (searchButton) {
+            searchButton.addEventListener('mouseenter', function() {
+                this.style.background = 'linear-gradient(135deg, #7c3aed, #6d28d9)';
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 8px 20px rgba(139, 92, 246, 0.4)';
+            });
+            
+            searchButton.addEventListener('mouseleave', function() {
+                this.style.background = 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.3)';
+            });
+        }
+
+        // Alumni card hover effects
+        const cards = document.querySelectorAll('div[style*="background: white"][style*="border-radius: 16px"]');
+        cards.forEach(card => {
+            // Skip pagination card
+            if (card.querySelector('nav')) return;
+            
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+                this.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.12)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
+            });
+        });
+
+        // Profile link hover effects
+        const profileLinks = document.querySelectorAll('a[href*="profile.view"]');
+        profileLinks.forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.color = '#8b5cf6';
+            });
+            
+            link.addEventListener('mouseleave', function() {
+                this.style.color = 'inherit';
+            });
+        });
+
+        // Email button hover effects
+        const emailButtons = document.querySelectorAll('a[href^="mailto:"]');
+        emailButtons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.background = 'linear-gradient(135deg, #7c3aed, #6d28d9)';
+                this.style.transform = 'translateY(-1px)';
+                this.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.4)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.background = 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 2px 8px rgba(139, 92, 246, 0.3)';
+            });
+        });
+
+        // Pagination hover effects
+        const paginationLinks = document.querySelectorAll('nav a, nav span');
+        paginationLinks.forEach(link => {
+            if (link.tagName === 'A') {
+                link.addEventListener('mouseenter', function() {
+                    if (!this.style.background.includes('linear-gradient')) {
+                        this.style.background = '#e2e8f0';
+                        this.style.color = '#374151';
+                    }
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    if (!this.style.background.includes('linear-gradient')) {
+                        this.style.background = '#f8fafc';
+                        this.style.color = '#64748b';
+                    }
+                });
+            }
+        });
+
+        // Auto-submit form on Enter
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    this.submit();
+                }
+            });
+        }
+
+        // Clear search functionality
+        const searchInput = document.querySelector('input[name="q"]');
+        if (searchInput && searchInput.value) {
+            // Add clear button
+            const clearButton = document.createElement('button');
+            clearButton.type = 'button';
+            clearButton.innerHTML = '×';
+            clearButton.style.cssText = `
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                font-size: 1.2rem;
+                color: #94a3b8;
+                cursor: pointer;
+                padding: 0;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            `;
+            
+            const searchContainer = searchInput.parentElement;
+            searchContainer.style.position = 'relative';
+            searchContainer.appendChild(clearButton);
+            
+            clearButton.addEventListener('click', function() {
+                searchInput.value = '';
+                form.submit();
+            });
+        }
+    });
+</script>
 {% endblock %}

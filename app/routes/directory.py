@@ -11,7 +11,7 @@ def list_alumni():
     # Get query parameters
     search_query = request.args.get('q', '')
     graduation_year = request.args.get('year', type=int)
-    program = request.args.get('program', '')
+    program = None
     page = request.args.get('page', 1, type=int)
     
     # Start building query

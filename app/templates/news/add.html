@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Add News Article - Alumni Connect{% endblock %}
+
+{% block content %}
+<section style="padding: 40px 0; max-width: 600px; margin: 0 auto;">
+    <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 20px; color: #1a1a1a;">Add News Article</h1>
+    <form method="POST" action="{{ url_for('news.add') }}">
+        <div style="margin-bottom: 15px;">
+            <label for="title" style="display: block; font-weight: 600; margin-bottom: 5px;">Title</label>
+            <input type="text" id="title" name="title" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label for="summary" style="display: block; font-weight: 600; margin-bottom: 5px;">Summary</label>
+            <textarea id="summary" name="summary" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label for="content" style="display: block; font-weight: 600; margin-bottom: 5px;">Content</label>
+            <textarea id="content" name="content" rows="8" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label for="image_url" style="display: block; font-weight: 600; margin-bottom: 5px;">Image URL</label>
+            <input type="url" id="image_url" name="image_url" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        <button type="submit" style="background: #8b5cf6; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.3s ease;">Add Article</button>
+    </form>
+</section>
+{% endblock %}

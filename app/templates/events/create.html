@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Create Event - Alumni Connect{% endblock %}
+
+{% block content %}
+<section style="padding: 40px 0; max-width: 600px; margin: 0 auto;">
+    <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 20px; color: #1a1a1a;">Create Event</h1>
+    <form method="POST" action="{{ url_for('events.create_event') }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div style="margin-bottom: 15px;">
+            {{ form.title.label }}<br>
+            {{ form.title(size=40, class="form-control") }}
+        </div>
+        <div style="margin-bottom: 15px;">
+            {{ form.description.label }}<br>
+            {{ form.description(rows=5, class="form-control") }}
+        </div>
+        <div style="margin-bottom: 15px;">
+            {{ form.event_date.label }}<br>
+            {{ form.event_date(class="form-control", type="datetime-local") }}
+        </div>
+        <div style="margin-bottom: 15px;">
+            {{ form.venue.label }}<br>
+            {{ form.venue(size=40, class="form-control") }}
+        </div>
+        <div style="margin-bottom: 15px;">
+            {{ form.max_attendees.label }}<br>
+            {{ form.max_attendees(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">Create Event</button>
+    </form>
+</section>
+{% endblock %}

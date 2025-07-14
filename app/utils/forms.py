@@ -16,6 +16,12 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
+    graduation_year = IntegerField('Graduation Year')
+    degree = StringField('Degree Program')
+    current_job_title = StringField('Current Job Title')
+    location = StringField('Location')
+    bio = TextAreaField('Bio')
+    profile_image = FileField('Profile Image')
     
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
@@ -41,7 +47,7 @@ class ProfileForm(FlaskForm):
 class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
-    event_date = DateTimeField('Event Date', validators=[DataRequired()], format='%Y-%m-%d %H:%M')
+    event_date = DateTimeField('Event Date', validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
     venue = StringField('Venue', validators=[DataRequired()])
     max_attendees = IntegerField('Max Attendees')
     event_image = FileField('Event Image')
@@ -88,5 +94,5 @@ class ResetPasswordForm(FlaskForm):
 class RSVPForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    attending = SelectField('Attending', choices=[('yes', 'Yes'), ('no', 'No')], validators=[DataRequired()])
+    status = SelectField('Status', choices=[('attending', 'Attending'), ('not_attending', 'Not Attending'), ('maybe', 'Maybe')], validators=[DataRequired()])
     submit = SubmitField('Submit RSVP')

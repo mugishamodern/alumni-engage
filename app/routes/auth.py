@@ -13,14 +13,17 @@ def login():
         return redirect(url_for('main.index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
+        username_input = form.username.data
+        password_input = form.password.data
+        user = User.query.filter_by(username=username_input).first()
+        if user is None or not user.check_password(password_input):
             flash('Invalid username or password', 'danger')
             return redirect(url_for('auth.login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or not next_page.startswith('/'):
             next_page = url_for('main.index')
+        flash('You have successfully logged in.', 'success')
         return redirect(next_page)
     return render_template('auth/login.html', title='Sign In', form=form)
 
@@ -35,11 +38,18 @@ def register():
         return redirect(url_for('main.index'))
     form = RegistrationForm()
     if form.validate_on_submit():
+        print(f"Register attempt with password: '{form.password.data}'")
         user = User(
             username=form.username.data,
             email=form.email.data,
             first_name=form.first_name.data,
-            last_name=form.last_name.data
+            last_name=form.last_name.data,
+            graduation_year=form.graduation_year.data,
+            degree=form.degree.data,
+            current_job_title=form.current_job_title.data,
+            location=form.location.data,
+            bio=form.bio.data,
+            profile_image=form.profile_image.data.filename if form.profile_image.data else None
         )
         user.set_password(form.password.data)
         db.session.add(user)

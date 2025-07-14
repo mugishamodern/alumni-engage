@@ -119,19 +119,19 @@
                         <a href="{{ url_for('main.index') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
                             <i class="fas fa-home" style="margin-right: 5px;"></i>Home
                         </a>
-                    <a href="{{ url_for('main.index') }}#news" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
-                        <i class="fas fa-newspaper" style="margin-right: 5px;"></i>News
-                    </a>
-                    <a href="{{ url_for('main.index') }}#events" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
-                        <i class="fas fa-calendar" style="margin-right: 5px;"></i>Events
-                    </a>
-                    <a href="{{ url_for('main.index') }}#directory" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+<a href="{{ url_for('news.index') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+    <i class="fas fa-newspaper" style="margin-right: 5px;"></i>News
+</a>
+<a href="{{ url_for('events.event_list') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+    <i class="fas fa-calendar" style="margin-right: 5px;"></i>Events
+</a>
+                    <a href="{{ url_for('directory.list_alumni') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
                         <i class="fas fa-users" style="margin-right: 5px;"></i>Directory
                     </a>
-                    <a href="{{ url_for('main.index') }}#jobs" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
-                        <i class="fas fa-briefcase" style="margin-right: 5px;"></i>Jobs
-                    </a>
-                    <a href="{{ url_for('main.index') }}#contact" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+                        <a href="{{ url_for('jobs.index') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+                            <i class="fas fa-briefcase" style="margin-right: 5px;"></i>Jobs
+                        </a>
+                    <a href="{{ url_for('contacts.index') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
                         <i class="fas fa-envelope" style="margin-right: 5px;"></i>Contact
                     </a>
                     </div>
@@ -147,11 +147,11 @@
                                 </button>
                                 
                                 <div id="profile-dropdown" class="dropdown-menu" style="position: absolute; top: 100%; right: 0; background: white; min-width: 200px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease; z-index: 1000;">
-                                    <a href="{{ url_for('profile.view') }}" class="dropdown-item" style="display: block; padding: 12px 20px; color: #1e293b; text-decoration: none; transition: all 0.3s ease;">
-                                        <i class="fas fa-user" style="margin-right: 10px; width: 16px;"></i>My Profile
+<a href="{{ url_for('profile.index') }}" class="dropdown-item" style="display: block; padding: 12px 20px; color: #1e293b; text-decoration: none; transition: all 0.3s ease;">
+    <i class="fas fa-user" style="margin-right: 10px; width: 16px;"></i>My Profile
                                     </a>
-                                    <a href="{{ url_for('profile.edit') }}" class="dropdown-item" style="display: block; padding: 12px 20px; color: #1e293b; text-decoration: none; transition: all 0.3s ease;">
-                                        <i class="fas fa-edit" style="margin-right: 10px; width: 16px;"></i>Edit Profile
+<a href="{{ url_for('profile.index') }}" class="dropdown-item" style="display: block; padding: 12px 20px; color: #1e293b; text-decoration: none; transition: all 0.3s ease;">
+    <i class="fas fa-edit" style="margin-right: 10px; width: 16px;"></i>Edit Profile
                                     </a>
                                     {% if current_user.is_admin %}
                                         <hr style="margin: 8px 0; border: none; border-top: 1px solid #e2e8f0;">
@@ -202,8 +202,8 @@
                 
                 {% if current_user.is_authenticated %}
                     <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.2);">
-                        <a href="{{ url_for('profile.view') }}" style="color: white; text-decoration: none; font-weight: 500; padding: 10px 0; display: block;">
-                            <i class="fas fa-user" style="margin-right: 10px;"></i>My Profile
+<a href="{{ url_for('profile.index') }}" style="color: white; text-decoration: none; font-weight: 500; padding: 10px 0; display: block;">
+    <i class="fas fa-user" style="margin-right: 10px;"></i>My Profile
                         </a>
                         <a href="{{ url_for('auth.logout') }}" style="color: white; text-decoration: none; font-weight: 500; padding: 10px 0; display: block;">
                             <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i>Logout
@@ -245,7 +245,7 @@
     </main>
     
     <!-- Footer -->
-    <footer style="background: #1e293b; color: white; padding: 40px 0; margin-top: 60px;">
+    <footer style="background: #1e293b; color: white; padding: 40px 0;">
         <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 30px;">
                 <div>

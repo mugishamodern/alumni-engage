@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request, Blueprint
+from flask import render_template, redirect, url_for, flash, request, Blueprint, current_app
 from flask_login import login_required, current_user
 from app import db
 from app.models import Event, RSVP
@@ -69,7 +69,6 @@ def event_detail(event_id):
 
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
-@admin_required
 def create_event():
     form = EventForm()
     if form.validate_on_submit():
@@ -81,10 +80,17 @@ def create_event():
             max_attendees=form.max_attendees.data,
             created_by=current_user.id
         )
-        db.session.add(event)
-        db.session.commit()
-        flash('Event created successfully!', 'success')
-        return redirect(url_for('events.event_detail', event_id=event.id))
+        try:
+            db.session.add(event)
+            db.session.commit()
+            flash('Event created successfully!', 'success')
+            return redirect(url_for('events.event_detail', event_id=event.id))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error saving event: {str(e)}', 'danger')
+    else:
+        if form.errors:
+            flash(f'Form validation errors: {form.errors}', 'danger')
     return render_template('events/create.html', title='Create Event', form=form)
 
 @bp.route('/<int:event_id>/edit', methods=['GET', 'POST'])

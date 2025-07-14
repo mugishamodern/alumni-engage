@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Job Opportunities - Alumni Connect{% endblock %}
+
+{% block content %}
+<!-- Job Opportunities Section -->
+<section style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); min-height: 100vh; padding: 80px 0;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <!-- Header Section -->
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h1 style="font-size: 3rem; font-weight: 600; color: #1a1a1a; margin-bottom: 16px;">
+                Job <span style="color: #8b5cf6;">Opportunities</span>
+            </h1>
+            <div style="width: 80px; height: 3px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); margin: 0 auto 24px; border-radius: 2px;"></div>
+            <p style="font-size: 1.1rem; color: #64748b; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+                Discover exciting career opportunities shared by our alumni community
+            </p>
+        </div>
+
+        <!-- Action Bar -->
+        {% if current_user.is_authenticated %}
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="background: #ede9fe; color: #8b5cf6; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">💼</div>
+                <div>
+                    <h3 style="margin: 0; font-size: 1.2rem; font-weight: 600; color: #1a1a1a;">Share an Opportunity</h3>
+                    <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Help fellow alumni find their next role</p>
+                </div>
+            </div>
+            <a href="{{ url_for('jobs.create') }}" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 12px 24px; border: none; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);">
+                <span>+</span> Create Job Posting
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Jobs Grid -->
+        {% if jobs %}
+        <div style="display: grid; gap: 24px;">
+            {% for job in jobs %}
+            <div style="background: white; border-radius: 16px; padding: 32px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border: 1px solid #e2e8f0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                <!-- Gradient accent -->
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(135deg, #8b5cf6, #06b6d4);"></div>
+                
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: start;">
+                    <!-- Job Info -->
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                            <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <div style="width: 24px; height: 24px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.8rem;">
+                                    {{ job.company[0] if job.company else 'J' }}
+                                </div>
+                            </div>
+                            <div>
+                                <h2 style="margin: 0; font-size: 1.5rem; font-weight: 600; color: #1a1a1a;">{{ job.title }}</h2>
+                                <p style="margin: 0; color: #64748b; font-size: 1rem; font-weight: 500;">{{ job.company }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Job Details -->
+                        <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="background: #dcfce7; color: #16a34a; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 500;">
+                                    📍 {{ job.location or 'Remote' }}
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="background: #fef3c7; color: #d97706; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 500;">
+                                    ⏰ {{ job.job_type }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Posted By -->
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                            <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.8rem;">
+                                {{ job.poster.first_name[0] }}{{ job.poster.last_name[0] }}
+                            </div>
+                            <div>
+                                <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Posted by</p>
+                                <p style="margin: 0; color: #1a1a1a; font-weight: 500; font-size: 0.95rem;">{{ job.poster.first_name }} {{ job.poster.last_name }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Job Description Preview -->
+                        {% if job.description %}
+                        <div style="margin-bottom: 20px;">
+                            <p style="color: #64748b; line-height: 1.6; font-size: 0.95rem; margin: 0;">
+                                {{ job.description[:150] }}{% if job.description|length > 150 %}...{% endif %}
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action Button -->
+                    <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-end;">
+                        <a href="{{ url_for('jobs.detail', id=job.id) }}" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3); white-space: nowrap;">
+                            View Details
+                        </a>
+                        <div style="text-align: right; font-size: 0.8rem; color: #94a3b8;">
+                            {% if job.created_at %}
+                            Posted {{ job.created_at.strftime('%b %d, %Y') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div style="text-align: center; padding: 80px 20px; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);">
+            <div style="background: #f8fafc; width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 3rem;">
+                💼
+            </div>
+            <h3 style="font-size: 1.5rem; font-weight: 600; color: #1a1a1a; margin-bottom: 16px;">No Job Opportunities Yet</h3>
+            <p style="color: #64748b; font-size: 1rem; margin-bottom: 32px; max-width: 400px; margin-left: auto; margin-right: auto;">
+                Be the first to share a job opportunity with your fellow alumni. Help build our professional network!
+            </p>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('jobs.create') }}" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 1rem; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);">
+                <span>+</span> Create First Job Posting
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Job card hover effects
+        const jobCards = document.querySelectorAll('[style*="background: white"][style*="border-radius: 16px"]');
+        jobCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+                this.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.12)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
+            });
+        });
+
+        // Button hover effects
+        const buttons = document.querySelectorAll('a[style*="background: linear-gradient"]');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.background = 'linear-gradient(135deg, #7c3aed, #6d28d9)';
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 8px 20px rgba(139, 92, 246, 0.4)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.background = 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.3)';
+            });
+        });
+
+        // Search functionality (if you want to add it later)
+        function filterJobs(searchTerm) {
+            const jobCards = document.querySelectorAll('[style*="background: white"][style*="border-radius: 16px"]');
+            jobCards.forEach(card => {
+                const title = card.querySelector('h2').textContent.toLowerCase();
+                const company = card.querySelector('p').textContent.toLowerCase();
+                const location = card.querySelector('[style*="📍"]').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm.toLowerCase()) || 
+                    company.includes(searchTerm.toLowerCase()) || 
+                    location.includes(searchTerm.toLowerCase())) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

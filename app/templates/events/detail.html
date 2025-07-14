@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }} - Alumni Connect{% endblock %}
+
+{% block content %}
+<section style="padding: 40px 0; max-width: 800px; margin: 0 auto;">
+    <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 20px; color: #1a1a1a;">{{ event.title }}</h1>
+    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">Event Date: {{ event.event_date.strftime('%B %d, %Y %H:%M') }}</p>
+    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">Venue: {{ event.venue }}</p>
+    {% if event.event_image %}
+    <img src="{{ event.event_image }}" alt="{{ event.title }}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 20px;">
+    {% endif %}
+    <div style="color: #1a1a1a; line-height: 1.6; font-size: 1.1rem;">
+        {{ event.description | safe }}
+    </div>
+    <div style="margin-top: 40px;">
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('events.event_detail', event_id=event.id) }}">
+            {{ form.hidden_tag() }}
+            <label for="status">RSVP Status:</label>
+            {{ form.status(class="form-control") }}
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Submit RSVP</button>
+        </form>
+        {% else %}
+        <p><a href="{{ url_for('auth.login') }}">Log in</a> to RSVP for this event.</p>
+        {% endif %}
+    </div>
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('events.event_list') }}" style="color: #06b6d4; text-decoration: none; font-weight: 600;">&larr; Back to Events</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <script src="{{ url_for('static', filename='js/counter.js') }}" defer></script>
+{% endblock %}
+
 {% block title %}Alumni Connect - Home{% endblock %}
 
 {% block content %}
@@ -19,10 +24,10 @@
                             LOGIN
                         </a>
                     {% else %}
-                        <a href="{{ url_for('main.dashboard') }}" style="background: #8b5cf6; color: white; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.2s ease; letter-spacing: 0.5px; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);">
-                            DASHBOARD
-                        </a>
-                        <a href="{{ url_for('directory.list') }}" style="background: transparent; color: #1a1a1a; padding: 16px 32px; text-decoration: none; font-weight: 500; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.2s ease; letter-spacing: 0.5px;">
+                            <a href="{{ url_for('admin.dashboard') }}" style="background: #8b5cf6; color: white; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.2s ease; letter-spacing: 0.5px; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);">
+                                DASHBOARD
+                            </a>
+                        <a href="{{ url_for('directory.list_alumni') }}" style="background: transparent; color: #1a1a1a; padding: 16px 32px; text-decoration: none; font-weight: 500; border: 2px solid #e2e8f0; border-radius: 8px; transition: all 0.2s ease; letter-spacing: 0.5px;">
                             BROWSE ALUMNI
                         </a>
                     {% endif %}
@@ -31,8 +36,7 @@
             <div style="flex: 1; min-width: 300px; text-align: center;">
                 <div style="background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%); width: 350px; height: 350px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);">
                     <div style="color: white; text-align: center;">
-                        <div style="font-size: 4rem; margin-bottom: 10px;">👥</div>
-                        <div style="font-size: 1.2rem; font-weight: 500;">Alumni Network</div>
+                        <img src="{{ url_for('static', filename='img/connect.svg') }}" alt="Alumni Connect" style="max-width: 100%; height: auto; border-radius: 50%;">
                     </div>
                 </div>
             </div>
@@ -351,7 +355,7 @@
                 GET STARTED TODAY
             </a>
         {% else %}
-            <a href="{{ url_for('directory.list') }}" style="background: #8b5cf6; color: white; padding: 16px 32px; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 1rem; transition: all 0.2s ease; display: inline-block; letter-spacing: 0.5px;">
+            <a href="{{ url_for('directory.list_alumni') }}" style="background: #8b5cf6; color: white; padding: 16px 32px; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 1rem; transition: all 0.2s ease; display: inline-block; letter-spacing: 0.5px;">
                 EXPLORE ALUMNI DIRECTORY
             </a>
         {% endif %}
