@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}View Message{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Message Details</h2>
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Subject: {{ message.subject }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">From: {{ message.sender.first_name }} {{ message.sender.last_name }} ({{ message.sender.email }})</h6>
+            <h6 class="card-subtitle mb-2 text-muted">To: {{ message.recipient.first_name }} {{ message.recipient.last_name }} ({{ message.recipient.email }})</h6>
+            <p class="card-text"><small class="text-muted">Sent: {{ message.sent_at.strftime('%Y-%m-%d %H:%M') }}</small></p>
+            <hr>
+            <p class="card-text" style="white-space: pre-line;">{{ message.content }}</p>
+            <form method="POST" action="{{ url_for('messages.delete_message', message_id=message.id) }}" class="mt-3">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this message?');">Delete</button>
+                <a href="{{ url_for('messages.inbox') }}" class="btn btn-secondary ms-2">Back to Inbox</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

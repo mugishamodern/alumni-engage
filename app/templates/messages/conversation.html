@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Conversation{% endblock %}
+{% block content %}
+<section style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); min-height: 100vh; padding: 80px 0;">
+    <div style="max-width: 900px; margin: 0 auto; padding: 0 20px;">
+        <div style="margin-bottom: 40px;">
+            <a href="{{ url_for('messages.inbox') }}" style="display: inline-flex; align-items: center; gap: 8px; color: #8b5cf6; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: all 0.2s ease; padding: 8px 16px; border-radius: 8px; background: rgba(139, 92, 246, 0.1);">
+                <span style="font-size: 1.2rem;">←</span> Back to Conversations
+            </a>
+        </div>
+        <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0;">
+            <div style="background: linear-gradient(135deg, #8b5cf6, #06b6d4); padding: 40px; color: white;">
+                <h2 style="margin: 0; font-size: 2rem; font-weight: 600;">Conversation with {{ other_user.first_name }} {{ other_user.last_name }}</h2>
+            </div>
+            <div style="padding: 40px;">
+                <div style="max-height: 400px; overflow-y: auto; margin-bottom: 32px;">
+                    {% for message in messages %}
+                        <div style="margin-bottom: 24px;">
+                            <div style="font-weight: 600; color: #374151;">
+                                {% if message.sender_id == current_user.id %}You{% else %}{{ other_user.first_name }} {{ other_user.last_name }}{% endif %}
+                                <span style="color: #94a3b8; font-size: 0.9rem; font-weight: 400;">&middot; {{ message.sent_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                            </div>
+                            <div style="background: #f8fafc; border-radius: 12px; padding: 16px; margin-top: 6px; color: #1a1a1a;">{{ message.content }}</div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">No messages in this conversation yet.</div>
+                    {% endfor %}
+                </div>
+                <form method="POST">
+                    <div style="display: grid; gap: 24px;">
+                        <div>
+                            <label for="subject" class="form-label" style="display: block; font-weight: 600; color: #374151; margin-bottom: 8px; font-size: 0.95rem;">Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: #f8fafc;">
+                        </div>
+                        <div>
+                            <label for="content" class="form-label" style="display: block; font-weight: 600; color: #374151; margin-bottom: 8px; font-size: 0.95rem;">Message</label>
+                            <textarea class="form-control" id="content" name="content" rows="4" required style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: #f8fafc; resize: vertical; font-family: inherit;"></textarea>
+                        </div>
+                        <div style="display: flex; gap: 16px; justify-content: flex-end;">
+                            <button type="submit" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 12px 32px; border: none; border-radius: 12px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);">
+                                <span>💬</span> Send Reply
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 

@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from app import db
 from app.models import User, News, Event, Job, Testimonial, ContactSubmission
 from app.utils.decorators import admin_required
+from app.models.message import Message
 
 bp = Blueprint('admin', __name__)
 
@@ -20,12 +21,16 @@ def dashboard():
     pending_jobs = Job.query.filter_by(is_approved=False).count()
     pending_testimonials = Testimonial.query.filter_by(is_approved=False).count()
     unread_contacts = ContactSubmission.query.filter_by(is_read=False).count()
-    
+    # Unread messages for current user
+    unread_messages = Message.query.filter_by(recipient_id=current_user.id, is_read=False).count()
+    # List of users for admin to message (exclude self)
+    users_for_messaging = User.query.filter(User.id != current_user.id).order_by(User.first_name.asc()).all()
     return render_template('admin/dashboard.html', title='Admin Dashboard',
                            user_count=user_count, event_count=event_count,
                            job_count=job_count, testimonial_count=testimonial_count,
                            pending_jobs=pending_jobs, pending_testimonials=pending_testimonials,
-                           unread_contacts=unread_contacts)
+                           unread_contacts=unread_contacts, unread_messages=unread_messages,
+                           users_for_messaging=users_for_messaging)
 
 @bp.route('/users')
 @login_required

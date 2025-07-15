@@ -8,7 +8,6 @@ __pycache__/
 venv/
 .env/
 .venv/
-env/
 myenv/
 
 # Environment variables
@@ -53,3 +52,10 @@ htmlcov/
 *.backup
 
 *.whl
+
+# Custom ignores for sensitive and local files
+config.py
+requirements.txt
+alumni_env/
+env/
+psycopg2_binary-2.9.10-cp313-cp313-win_amd64.whl

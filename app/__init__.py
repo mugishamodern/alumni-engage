@@ -49,6 +49,9 @@ def create_app(config_class=Config):
     from app.routes.contacts import bp as contact_bp
     app.register_blueprint(contact_bp, url_prefix='/contact')
 
+    from app.routes.messages import bp as messages_bp
+    app.register_blueprint(messages_bp, url_prefix='/messages')
+
     from app.models.user import User
     from app.models.event import Event
     from app.models.job import Job

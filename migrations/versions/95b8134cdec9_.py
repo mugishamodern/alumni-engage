@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 672f3d9caa36
+Revision ID: 95b8134cdec9
 Revises: 
-Create Date: 2025-07-15 12:23:25.482496
+Create Date: 2025-07-15 23:37:17.547601
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '672f3d9caa36'
+revision = '95b8134cdec9'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -37,10 +37,8 @@ def upgrade():
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('users', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_users_email'), ['email'], unique=True)
-        batch_op.create_index(batch_op.f('ix_users_username'), ['username'], unique=True)
-
+    op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
+    op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
     op.create_table('contact_submissions',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
@@ -90,6 +88,19 @@ def upgrade():
     sa.ForeignKeyConstraint(['posted_by'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('messages',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('sender_id', sa.Integer(), nullable=False),
+    sa.Column('recipient_id', sa.Integer(), nullable=False),
+    sa.Column('subject', sa.String(length=200), nullable=False),
+    sa.Column('content', sa.Text(), nullable=False),
+    sa.Column('is_read', sa.Boolean(), nullable=True),
+    sa.Column('sent_at', sa.DateTime(), nullable=True),
+    sa.Column('read_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['recipient_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['sender_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('news',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=200), nullable=False),
@@ -136,12 +147,11 @@ def downgrade():
     op.drop_table('rsvps')
     op.drop_table('testimonials')
     op.drop_table('news')
+    op.drop_table('messages')
     op.drop_table('jobs')
     op.drop_table('events')
     op.drop_table('contact_submissions')
-    with op.batch_alter_table('users', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_users_username'))
-        batch_op.drop_index(batch_op.f('ix_users_email'))
-
+    op.drop_index(op.f('ix_users_username'), table_name='users')
+    op.drop_index(op.f('ix_users_email'), table_name='users')
     op.drop_table('users')
     # ### end Alembic commands ###
