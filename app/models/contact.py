@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from app import db
 
 class ContactSubmission(db.Model):
@@ -12,7 +12,8 @@ class ContactSubmission(db.Model):
     is_read = db.Column(db.Boolean, default=False)
     admin_response = db.Column(db.Text)
     responded_at = db.Column(db.DateTime)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
     
     def __repr__(self):
         return f'<ContactSubmission from {self.name}>'

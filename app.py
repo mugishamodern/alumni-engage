@@ -1,5 +1,5 @@
 from app import create_app, db
-from app.models import User, News, Event, RSVP, Job, Testimonial, ContactSubmission
+from app.models import User, News, Event, RSVP, Job, Testimonial, ContactSubmission, PasswordReset
 from app.utils.helpers import init_app as init_helpers
 
 app = create_app()
@@ -15,7 +15,8 @@ def make_shell_context():
         'RSVP': RSVP,
         'Job': Job,
         'Testimonial': Testimonial,
-        'ContactSubmission': ContactSubmission
+        'ContactSubmission': ContactSubmission,
+        'PasswordReset': PasswordReset
     }
 
 if __name__ == '__main__':
