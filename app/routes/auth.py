@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, request, Blueprint
 from flask_login import login_user, logout_user, current_user, login_required
 from app import db
 from app.models import User
-from app.utils.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
+from app.utils.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, ForgotPasswordForm
 from app.utils.email import send_password_reset_email
 
 bp = Blueprint('auth', __name__)
@@ -88,3 +88,9 @@ def reset_password(token):
         flash('Your password has been reset.', 'success')
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html', form=form)
+
+@bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    form = ForgotPasswordForm()
+    
+    return render_template('auth/forgot.html', title='Forgot Password', form=form)
