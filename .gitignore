@@ -52,4 +52,4 @@ htmlcov/
 *.tmp
 *.backup
 
-.whl
+*.whl
