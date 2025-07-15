@@ -1,0 +1,47 @@
+{% extends 'admin/dashboard.html' %}
+
+{% block content %}
+<div class="content">
+    <h1>Manage Users</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Year of Graduation</th>
+                <th>Current Job</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users.items %}
+            <tr>
+                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.graduation_year or 'N/A' }}</td>
+                <td>{{ user.current_job_title or 'N/A' }}</td>
+                <td>
+                    {% if user.is_active %}
+                    <a href="{{ url_for('admin.deactivate_user', user_id=user.id) }}" class="btn btn-warning btn-sm">Deactivate</a>
+                    {% else %}
+                    <a href="{{ url_for('admin.activate_user', user_id=user.id) }}" class="btn btn-success btn-sm">Activate</a>
+                    {% endif %}
+                    <a href="{{ url_for('admin.delete_user', user_id=user.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                    <button class="btn btn-secondary btn-sm" disabled>Message</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        {% if users.has_prev %}
+        <a href="{{ url_for('admin.manage_users', page=users.prev_num) }}">Previous</a>
+        {% endif %}
+        <span>Page {{ users.page }} of {{ users.pages }}</span>
+        {% if users.has_next %}
+        <a href="{{ url_for('admin.manage_users', page=users.next_num) }}">Next</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

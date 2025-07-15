@@ -48,6 +48,30 @@ def create_app(config_class=Config):
     
     from app.routes.contacts import bp as contact_bp
     app.register_blueprint(contact_bp, url_prefix='/contact')
+
+    from app.models.user import User
+    from app.models.event import Event
+    from app.models.job import Job
+    from app.models.testimonial import Testimonial
+    from app.models.message import Message
+    from app.models.contact import ContactSubmission
+
+    @app.context_processor
+    def inject_sidebar_stats():
+        user_count = User.query.count()
+        event_count = Event.query.filter_by(is_active=True).count()
+        job_count = Job.query.filter_by(is_approved=True, is_active=True).count()
+        testimonial_count = Testimonial.query.filter_by(is_approved=True).count()
+        # unread_messages = Message.query.filter_by(is_read=False).count()
+        unread_contacts = ContactSubmission.query.filter_by(is_read=False).count()
+        return dict(
+            user_count=user_count,
+            event_count=event_count,
+            job_count=job_count,
+            testimonial_count=testimonial_count,
+            # unread_messages=unread_messages,
+            unread_contacts=unread_contacts
+        )
     
     return app
 

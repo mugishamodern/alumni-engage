@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request, Blueprint
+from flask import render_template, redirect, url_for, flash, request, Blueprint, current_app
 from flask_login import login_required, current_user
 from app import db
 from app.models import User, News, Event, Job, Testimonial, ContactSubmission
@@ -35,6 +35,42 @@ def manage_users():
     users = User.query.order_by(User.created_at.desc()).paginate(
         page=page, per_page=current_app.config['POSTS_PER_PAGE'], error_out=False)
     return render_template('admin/manage_users.html', title='Manage Users', users=users)
+
+@bp.route('/users/<int:user_id>/deactivate')
+@login_required
+@admin_required
+def deactivate_user(user_id):
+    user = User.query.get_or_404(user_id)
+    if user.is_active:
+        user.is_active = False
+        db.session.commit()
+        flash(f'User {user.first_name} {user.last_name} has been deactivated.', 'success')
+    else:
+        flash(f'User {user.first_name} {user.last_name} is already deactivated.', 'info')
+    return redirect(url_for('admin.manage_users'))
+
+@bp.route('/users/<int:user_id>/activate')
+@login_required
+@admin_required
+def activate_user(user_id):
+    user = User.query.get_or_404(user_id)
+    if not user.is_active:
+        user.is_active = True
+        db.session.commit()
+        flash(f'User {user.first_name} {user.last_name} has been activated.', 'success')
+    else:
+        flash(f'User {user.first_name} {user.last_name} is already active.', 'info')
+    return redirect(url_for('admin.manage_users'))
+
+@bp.route('/users/<int:user_id>/delete')
+@login_required
+@admin_required
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'User {user.first_name} {user.last_name} has been deleted.', 'success')
+    return redirect(url_for('admin.manage_users'))
 
 @bp.route('/events')
 @login_required

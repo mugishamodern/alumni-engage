@@ -20,6 +20,9 @@ def login():
             flash('Invalid username or password', 'danger')
             return redirect(url_for('auth.login'))
         login_user(user, remember=form.remember_me.data)
+        if user.is_admin:
+            flash('Welcome Admin! You have successfully logged in.', 'success')
+            return redirect(url_for('admin.dashboard'))
         next_page = request.args.get('next')
         if not next_page or not next_page.startswith('/'):
             next_page = url_for('main.index')

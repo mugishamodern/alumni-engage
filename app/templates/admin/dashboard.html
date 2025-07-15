@@ -1,161 +1,728 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-{% block title %}Admin Dashboard{% endblock %}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            min-height: 100vh;
+        }
 
-{% block content %}
-<div class="container py-5">
-    <h1 class="mb-4">Admin Dashboard</h1>
-    
-    <div class="row mb-5">
-        <div class="col-md-3">
-            <div class="card text-center bg-primary text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Users</h5>
-                    <h2 class="card-text">{{ user_count }}</h2>
-                    <a href="{{ url_for('admin.manage_users') }}" class="text-white">Manage Users</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center bg-success text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Events</h5>
-                    <h2 class="card-text">{{ event_count }}</h2>
-                    <a href="{{ url_for('admin.manage_events') }}" class="text-white">Manage Events</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center bg-info text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Jobs</h5>
-                    <h2 class="card-text">{{ job_count }}</h2>
-                    <a href="{{ url_for('admin.manage_jobs') }}" class="text-white">Manage Jobs</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center bg-warning text-dark">
-                <div class="card-body">
-                    <h5 class="card-title">Testimonials</h5>
-                    <h2 class="card-text">{{ testimonial_count }}</h2>
-                    <a href="{{ url_for('admin.manage_testimonials') }}" class="text-dark">Manage Testimonials</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header bg-purple text-white">
-                    <h5 class="mb-0">Recent Users</h5>
-                </div>
-                <div class="card-body">
-                    <div class="list-group">
-                        {% for user in recent_users %}
-                        <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" 
-                           class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">{{ user.first_name }} {{ user.last_name }}</h6>
-                                <small>{{ user.created_at|time_ago }}</small>
-                            </div>
-                            <p class="mb-1">{{ user.email }}</p>
-                            <small>Joined: {{ user.created_at.strftime('%b %d, %Y') }}</small>
-                        </a>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-brand::before {
+            content: "⚡";
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-section-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 20px;
+            margin-bottom: 12px;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-radius: 0;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #8b5cf6;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+        }
+
+        .nav-link.active {
+            color: #8b5cf6;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+            border-right: 3px solid #8b5cf6;
+        }
+
+        .nav-link-icon {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-link-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 40px;
+        }
+
+        .dashboard-header {
+            margin-bottom: 40px;
+        }
+
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            background: var(--card-gradient);
+        }
+
+        .stat-card-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .stat-card-link {
+            color: #8b5cf6;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .stat-card-link:hover {
+            color: #7c3aed;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .content-card-header {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .content-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .content-card-body {
+            padding: 24px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .list-item:hover {
+            background: #f8fafc;
+            transform: translateX(4px);
+        }
+
+        .list-item-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .list-item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .list-item-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .list-item-subtitle {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+
+        .list-item-meta {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .list-item-badge {
+            background: #8b5cf6;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-text {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        /* System Status */
+        .system-status {
+            margin-bottom: 24px;
+        }
+
+        .status-item {
+            margin-bottom: 24px;
+        }
+
+        .status-item-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            transition: width 0.3s ease;
+        }
+
+        .status-meta {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .status-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .status-success {
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .error-list {
+            list-style: none;
+        }
+
+        .error-item {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #dc2626;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
             
-            <div class="card">
-                <div class="card-header bg-purple text-white">
-                    <h5 class="mb-0">Pending Approvals</h5>
-                </div>
-                <div class="card-body">
-                    <div class="list-group">
-                        <a href="{{ url_for('admin.manage_jobs') }}?status=pending" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            Job Postings
-                            <span class="badge bg-primary rounded-pill">{{ pending_jobs }}</span>
-                        </a>
-                        <a href="{{ url_for('admin.manage_testimonials') }}?status=pending" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            Testimonials
-                            <span class="badge bg-primary rounded-pill">{{ pending_testimonials }}</span>
-                        </a>
-                        <a href="{{ url_for('admin.contact_submissions') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            Contact Messages
-                            <span class="badge bg-primary rounded-pill">{{ unread_contacts }}</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        {% include 'admin/_sidebar.html' %}
         
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header bg-purple text-white">
-                    <h5 class="mb-0">Upcoming Events</h5>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Admin Dashboard</h1>
+                <p class="dashboard-subtitle">Welcome back! Here's what's happening with your platform today.</p>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card" style="--card-gradient: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                    <div class="stat-card-header">
+                        <div class="stat-card-title">Total Users</div>
+                        <div class="stat-card-icon">👥</div>
+                    </div>
+                    <div class="stat-card-value">{{ user_count }}</div>
+                    <a href="{{ url_for('admin.manage_users') }}" class="stat-card-link">Manage Users →</a>
                 </div>
-                <div class="card-body">
-                    <div class="list-group">
-                        {% for event in upcoming_events %}
-                        <a href="{{ url_for('events.event_detail', event_id=event.id) }}" 
-                           class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">{{ event.title }}</h6>
-                                <small>{{ event.event_date|time_ago }}</small>
+                
+                <div class="stat-card" style="--card-gradient: linear-gradient(135deg, #10b981, #059669);">
+                    <div class="stat-card-header">
+                        <div class="stat-card-title">Active Events</div>
+                        <div class="stat-card-icon">📅</div>
+                    </div>
+                    <div class="stat-card-value">{{ event_count }}</div>
+                    <a href="{{ url_for('admin.manage_events') }}" class="stat-card-link">Manage Events →</a>
+                </div>
+                
+                <div class="stat-card" style="--card-gradient: linear-gradient(135deg, #06b6d4, #0891b2);">
+                    <div class="stat-card-header">
+                        <div class="stat-card-title">Job Postings</div>
+                        <div class="stat-card-icon">💼</div>
+                    </div>
+                    <div class="stat-card-value">{{ job_count }}</div>
+                    <a href="#" class="stat-card-link">View Jobs →</a>
+                </div>
+                
+                <div class="stat-card" style="--card-gradient: linear-gradient(135deg, #f59e0b, #d97706);">
+                    <div class="stat-card-header">
+                        <div class="stat-card-title">Testimonials</div>
+                        <div class="stat-card-icon">⭐</div>
+                    </div>
+                    <div class="stat-card-value">{{ testimonial_count }}</div>
+                    <a href="#" class="stat-card-link">View Testimonials →</a>
+                </div>
+            </div>
+            
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Recent Users -->
+                <div class="content-card">
+                    <div class="content-card-header">
+                        <span>👥</span>
+                        <h3 class="content-card-title">Recent Users</h3>
+                    </div>
+                    <div class="content-card-body">
+                        {% for user in recent_users %}
+                        <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="list-item">
+                            <div class="list-item-avatar">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
+                            <div class="list-item-content">
+                                <div class="list-item-title">{{ user.first_name }} {{ user.last_name }}</div>
+                                <div class="list-item-subtitle">{{ user.email }}</div>
+                                <div class="list-item-meta">Joined: {{ user.created_at.strftime('%b %d, %Y') }}</div>
                             </div>
-                            <p class="mb-1">
-                                <i class="fas fa-calendar-alt me-1"></i> 
-                                {{ event.event_date.strftime('%b %d, %Y') }} at 
-                                {{ event.event_date.strftime('%I:%M %p') }}
-                            </p>
-                            <small>{{ event.venue }}</small>
                         </a>
                         {% else %}
-                        <div class="list-group-item">
-                            <p class="mb-0 text-muted">No upcoming events</p>
+                        <div class="empty-state">
+                            <div class="empty-state-icon">👥</div>
+                            <div class="empty-state-title">No Recent Users</div>
+                            <div class="empty-state-text">No users have joined yet.</div>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header bg-purple text-white">
-                    <h5 class="mb-0">System Status</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <h6>Database</h6>
-                        <div class="progress mb-2">
-                            <div class="progress-bar bg-success" style="width: 25%">25%</div>
-                        </div>
-                        <small>12.5 MB / 50 MB used</small>
+                
+                <!-- Upcoming Events -->
+                <div class="content-card">
+                    <div class="content-card-header">
+                        <span>📅</span>
+                        <h3 class="content-card-title">Upcoming Events</h3>
                     </div>
-                    
-                    <div class="mb-3">
-                        <h6>Active Users (Last 30 days)</h6>
-                        <p class="display-6">{{ active_users }}</p>
-                    </div>
-                    
-                    <div>
-                        <h6>Recent Errors</h6>
-                        {% if recent_errors %}
-                        <ul class="list-group">
-                            {% for error in recent_errors %}
-                            <li class="list-group-item list-group-item-danger">
-                                <small>{{ error.timestamp.strftime('%b %d, %I:%M %p') }} - {{ error.message|truncate(50) }}</small>
-                            </li>
-                            {% endfor %}
-                        </ul>
+                    <div class="content-card-body">
+                        {% for event in upcoming_events %}
+                        <a href="{{ url_for('events.event_detail', event_id=event.id) }}" class="list-item">
+                            <div class="list-item-avatar">🎓</div>
+                            <div class="list-item-content">
+                                <div class="list-item-title">{{ event.title }}</div>
+                                <div class="list-item-subtitle">📍 {{ event.venue }}</div>
+                                <div class="list-item-meta">{{ event.event_date.strftime('%b %d, %Y at %I:%M %p') }}</div>
+                            </div>
+                        </a>
                         {% else %}
-                        <p class="text-success mb-0"><i class="fas fa-check-circle"></i> No recent errors</p>
-                        {% endif %}
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📅</div>
+                            <div class="empty-state-title">No Upcoming Events</div>
+                            <div class="empty-state-text">Create your first event to get started</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Pending Approvals -->
+                <div class="content-card">
+                    <div class="content-card-header">
+                        <span>⏳</span>
+                        <h3 class="content-card-title">Pending Approvals</h3>
+                    </div>
+                    <div class="content-card-body">
+                        {# <a href="{{ url_for('admin.manage_jobs') }}" class="list-item">
+                            <div class="list-item-avatar">💼</div>
+                            <div class="list-item-content">
+                                <div class="list-item-title">Job Postings</div>
+                                <div class="list-item-subtitle">Awaiting review</div>
+                            </div>
+                            <div class="list-item-badge">{{ pending_jobs }}</div>
+                        </a> #}
+                        
+                        {# <a href="{{ url_for('admin.manage_testimonials') }}" class="list-item">
+                            <div class="list-item-avatar">⭐</div>
+                            <div class="list-item-content">
+                                <div class="list-item-title">Testimonials</div>
+                                <div class="list-item-subtitle">Awaiting review</div>
+                            </div>
+                            <div class="list-item-badge">{{ pending_testimonials }}</div>
+                        </a> #}
+                        
+                        <a href="{{ url_for('contacts.index') }}" class="list-item">
+                            <div class="list-item-avatar">📧</div>
+                            <div class="list-item-content">
+                                <div class="list-item-title">Contact Messages</div>
+                                <div class="list-item-subtitle">Unread messages</div>
+                            </div>
+                            <div class="list-item-badge">{{ unread_contacts }}</div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- System Status -->
+                <div class="content-card">
+                    <div class="content-card-header">
+                        <span>⚙️</span>
+                        <h3 class="content-card-title">System Status</h3>
+                    </div>
+                    <div class="content-card-body">
+                        <div class="system-status">
+                            <div class="status-item">
+                                <div class="status-item-title">Database Usage</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 25%;"></div>
+                                </div>
+                                <div class="status-meta">12.5 MB / 50 MB used</div>
+                            </div>
+                            
+                            <div class="status-item">
+                                <div class="status-item-title">Active Users (Last 30 days)</div>
+                                <div class="status-value">856</div>
+                            </div>
+                            
+                            <div class="status-item">
+                                <div class="status-item-title">System Health</div>
+                                <div class="status-success">
+                                    <span>✅</span>
+                                    All systems operational
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
-</div>
-{% endblock %}
+    
+    <script>
+        // Add interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                });
+            });
+            
+            // Stat cards hover effect
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // List items hover effect
+            const listItems = document.querySelectorAll('.list-item');
+            listItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.background = '#f8fafc';
+                    this.style.transform = 'translateX(4px)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.background = 'transparent';
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+            
+            // Animate progress bars on load
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+            
+            // Animate counters
+            const counters = document.querySelectorAll('.stat-card-value, .status-value');
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent.replace(/,/g, ''));
+                let current = 0;
+                const increment = target / 50;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    counter.textContent = Math.floor(current).toLocaleString();
+                }, 30);
+            });
+            
+            // Mobile sidebar toggle (for responsive design)
+            const createMobileToggle = () => {
+                if (window.innerWidth <= 768) {
+                    let mobileToggle = document.querySelector('.mobile-toggle');
+                    if (!mobileToggle) {
+                        mobileToggle = document.createElement('button');
+                        mobileToggle.className = 'mobile-toggle';
+                        mobileToggle.innerHTML = '☰';
+                        mobileToggle.style.cssText = `
+                            position: fixed;
+                            top: 20px;
+                            left: 20px;
+                            z-index: 1001;
+                            background: white;
+                            border: 1px solid #e2e8f0;
+                            border-radius: 8px;
+                            width: 40px;
+                            height: 40px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 1.2rem;
+                            cursor: pointer;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                        `;
+                        document.body.appendChild(mobileToggle);
+                        
+                        mobileToggle.addEventListener('click', () => {
+                            const sidebar = document.querySelector('.sidebar');
+                            sidebar.classList.toggle('open');
+                        });
+                    }
+                }
+            };
+            
+            createMobileToggle();
+            window.addEventListener('resize', createMobileToggle);
+        });
+    </script>
+</body>
+</html>
