@@ -8,7 +8,6 @@ from .rsvp import RSVP
 from .job import Job
 from .testimonial import Testimonial
 from .contact import ContactSubmission
-from .password_resets  import PasswordReset
 
 # Optional: For convenience in other parts of the app
 __all__ = ['User', 'News', 'Event', 'RSVP', 'Job', 'Testimonial', 'ContactSubmission', 'PasswordReset']
