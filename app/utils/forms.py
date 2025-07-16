@@ -97,7 +97,4 @@ class RSVPForm(FlaskForm):
     status = SelectField('Status', choices=[('attending', 'Attending'), ('not_attending', 'Not Attending'), ('maybe', 'Maybe')], validators=[DataRequired()])
     submit = SubmitField('Submit RSVP')
     
-# Forgot Password Form
-class ForgotPasswordForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
 
