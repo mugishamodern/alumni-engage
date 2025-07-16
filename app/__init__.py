@@ -9,6 +9,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 mail = Mail()
+jwt = None  # Placeholder for PyJWT, to be initialized later
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -21,6 +22,10 @@ def create_app(config_class=Config):
     
     login.login_view = 'auth.login'
     login.login_message_category = 'info'
+    
+    # Import PyJWT
+    import jwt as pyjwt
+    jwt =pyjwt
     
     from app.routes.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')

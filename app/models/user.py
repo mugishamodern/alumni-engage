@@ -1,9 +1,11 @@
 from datetime import datetime, timezone
+import time
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Use pbkdf2:sha256 for password hashing for compatibility
 from flask_login import UserMixin
 from app import db, login
+import jwt 
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -41,15 +43,20 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
     
     def get_reset_password_token(self, expires_in=600):
-        from app import jwt
-        return jwt.dumps({'user_id': self.id}, expires_in=expires_in)
+        from flask import current_app
+        return jwt.encode(
+            {'user_id': self.id, 'exp': time.time() + expires_in},
+            current_app.config['SECRET_KEY'],
+            algorithm='HS256'
+        )
     
     @staticmethod
     def verify_reset_password_token(token):
-        from app import jwt
+        from flask import current_app
         try:
-            user_id = jwt.loads(token)['user_id']
-        except:
+            payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            user_id = payload['user_id']
+        except (jwt.InvalidTokenError, jwt.ExpiredSignatureError):
             return None
         return User.query.get(user_id)
     
