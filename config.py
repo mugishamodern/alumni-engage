@@ -17,3 +17,12 @@ class Config:
     POSTS_PER_PAGE = 10
     EVENTS_PER_PAGE = 8
     JOBS_PER_PAGE = 6
+    
+    def __init__(self):
+        # Log warnings for missing critical configurations
+        if not self.MAIL_USERNAME:
+            print("Warning: MAIL_USERNAME is not set")
+        if not self.MAIL_PASSWORD:
+            print("Warning: MAIL_PASSWORD is not set")
+        if not self.MAIL_DEFAULT_SENDER:
+            print("Warning: MAIL_DEFAULT_SENDER is not set")

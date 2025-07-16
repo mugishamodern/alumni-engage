@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from app import db
 
 class Testimonial(db.Model):
@@ -10,8 +10,9 @@ class Testimonial(db.Model):
     rating = db.Column(db.Integer)  # 1-5 stars
     is_approved = db.Column(db.Boolean, default=False)
     is_featured = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
     
     def __repr__(self):
         return f'<Testimonial by user {self.user_id}>'

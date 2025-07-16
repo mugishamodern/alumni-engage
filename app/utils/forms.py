@@ -96,3 +96,5 @@ class RSVPForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     status = SelectField('Status', choices=[('attending', 'Attending'), ('not_attending', 'Not Attending'), ('maybe', 'Maybe')], validators=[DataRequired()])
     submit = SubmitField('Submit RSVP')
+    
+

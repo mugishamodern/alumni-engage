@@ -13,8 +13,7 @@ def send_email(subject, sender, recipients, text_body, html_body):
     msg.html = html_body
     Thread(target=send_async_email, args=(current_app._get_current_object(), msg)).start()
 
-def send_password_reset_email(user):
-    token = user.get_reset_password_token()
+def send_password_reset_email(user,token):
     send_email(
         '[Alumni Network] Reset Your Password',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],

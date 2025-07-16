@@ -55,6 +55,10 @@
                         {% for error in form.password.errors %}
                             <div style="color: #ef4444; font-size: 0.875rem; margin-top: 8px; font-weight: 500;">{{ error }}</div>
                         {% endfor %}
+                        <!-- Forgot Password Link -->
+                        <div style="text-align: right; margin-top: 8px;">
+                            <a href="{{ url_for('auth.reset_password_request') }}" style="color: #8b5cf6; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Forgot Password?</a>
+                        </div>
                     </div>
 
                     <!-- Remember Me Checkbox -->
@@ -124,18 +128,20 @@
             this.style.boxShadow = '0 4px 14px rgba(139, 92, 246, 0.3)';
         });
 
-        // Register link hover effect
-        const registerLink = document.querySelector('a[href*="register"]');
-        registerLink.addEventListener('mouseenter', function() {
-            this.style.background = '#8b5cf6';
-            this.style.color = 'white';
-            this.style.transform = 'translateY(-2px)';
-        });
-        
-        registerLink.addEventListener('mouseleave', function() {
-            this.style.background = 'transparent';
-            this.style.color = '#8b5cf6';
-            this.style.transform = 'translateY(0)';
+        // Register and Forgot Password link hover effect
+        const links = document.querySelectorAll('a[href*="register"], a[href*="forgot_password"]');
+        links.forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.background = '#8b5cf6';
+                this.style.color = 'white';
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            link.addEventListener('mouseleave', function() {
+                this.style.background = 'transparent';
+                this.style.color = '#8b5cf6';
+                this.style.transform = 'translateY(0)';
+            });
         });
 
         // Form validation styling
