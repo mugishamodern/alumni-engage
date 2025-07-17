@@ -4,11 +4,6 @@ from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationE
 from app.models import User
 from flask_wtf.file import FileField
 
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
-    submit = SubmitField('LOGIN')
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=25)])
@@ -34,6 +29,12 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+        
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('LOGIN')
         
 class ResetPasswordRequestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
