@@ -64,12 +64,14 @@ class EventForm(FlaskForm):
     venue = StringField('Venue', validators=[DataRequired()])
     max_attendees = IntegerField('Max Attendees')
     event_image = FileField('Event Image')
+    submit = SubmitField('Create Event')
 
 class ContactForm(FlaskForm):
     name = StringField('Your Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     subject = StringField('Subject', validators=[DataRequired()])
     message = TextAreaField('Message', validators=[DataRequired(), Length(min=10)])
+    submit = SubmitField('Send Message')
 
 class JobForm(FlaskForm):
     title = StringField('Job Title', validators=[DataRequired()])
