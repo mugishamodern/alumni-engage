@@ -122,8 +122,9 @@
 <a href="{{ url_for('news.index') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
     <i class="fas fa-newspaper" style="margin-right: 5px;"></i>News
 </a>
-<a href="{{ url_for('events.event_list') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+<a href="{{ url_for('events.event_list') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9; position: relative;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
     <i class="fas fa-calendar" style="margin-right: 5px;"></i>Events
+    <span id="event-badge" class="badge bg-danger" style="position: absolute; top: -8px; right: -18px; font-size: 0.7rem; display: none;">0</span>
 </a>
                     <a href="{{ url_for('directory.list_alumni') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
                         <i class="fas fa-users" style="margin-right: 5px;"></i>Directory
@@ -131,14 +132,28 @@
                         <a href="{{ url_for('jobs.index') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
                             <i class="fas fa-briefcase" style="margin-right: 5px;"></i>Jobs
                         </a>
-                    <a href="{{ url_for('contacts.index') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+                    <a href="{{ url_for('contacts.index') }}" style="color: white; text-decoration: none; font-weight: 500; transition: opacity 0.3s ease; opacity: 0.9; position: relative;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
                         <i class="fas fa-envelope" style="margin-right: 5px;"></i>Contact
+                        <span id="message-badge" class="badge bg-danger" style="position: absolute; top: -8px; right: -18px; font-size: 0.7rem; display: none;">0</span>
                     </a>
                     </div>
                     
                     <!-- User Navigation -->
                     <div style="display: flex; align-items: center; gap: 15px; margin-left: 20px; border-left: 1px solid rgba(255, 255, 255, 0.3); padding-left: 20px;">
                         {% if current_user.is_authenticated %}
+                            <!-- Notification Bell -->
+                            <div style="position: relative; margin-right: 10px;">
+                                <button id="notif-bell" style="background: none; border: none; color: white; font-size: 1.4rem; position: relative;">
+                                    <i class="fas fa-bell"></i>
+                                    <span id="notif-badge" class="badge bg-danger" style="position: absolute; top: -6px; right: -6px; font-size: 0.7rem; display: none;">0</span>
+                                </button>
+                                <div id="notif-dropdown" class="dropdown-menu" style="position: absolute; top: 120%; right: 0; min-width: 320px; max-width: 400px; background: white; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 2000; display: none;">
+                                    <div id="notif-list" style="max-height: 350px; overflow-y: auto;"></div>
+                                    <div style="text-align: center; padding: 10px 0;">
+                                        <a href="#" id="notif-view-all" style="font-size: 0.95rem; color: #6366f1; text-decoration: underline;">View all notifications</a>
+                                    </div>
+                                </div>
+                            </div>
                             <div style="position: relative;">
                                 <button id="profile-dropdown-btn" style="background: none; border: none; color: white; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.3s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'" onmouseout="this.style.background='none'">
                                     <img src="{{ current_user.get_profile_image_url() }}" alt="Profile" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
@@ -152,6 +167,9 @@
                                     </a>
 <a href="{{ url_for('profile.index') }}" class="dropdown-item" style="display: block; padding: 12px 20px; color: #1e293b; text-decoration: none; transition: all 0.3s ease;">
     <i class="fas fa-edit" style="margin-right: 10px; width: 16px;"></i>Edit Profile
+                                    </a>
+                                    <a href="{{ url_for('profile.notification_preferences') }}" class="dropdown-item" style="display: block; padding: 12px 20px; color: #1e293b; text-decoration: none; transition: all 0.3s ease;">
+    <i class="fas fa-bell" style="margin-right: 10px; width: 16px;"></i>Notification Preferences
                                     </a>
                                     {% if current_user.is_admin %}
                                         <hr style="margin: 8px 0; border: none; border-top: 1px solid #e2e8f0;">
@@ -287,6 +305,15 @@
         </div>
     </footer>
     
+    <!-- Notification Toast (Login Pop-up) -->
+    <div class="toast align-items-center text-bg-primary border-0" id="notif-toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 80px; right: 30px; min-width: 300px; z-index: 3000; display: none;">
+      <div class="d-flex">
+        <div class="toast-body" id="notif-toast-body">
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close" onclick="document.getElementById('notif-toast').style.display='none'"></button>
+      </div>
+    </div>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Mobile menu toggle
@@ -350,5 +377,89 @@
     </script>
     
     {% block scripts %}{% endblock %}
-</body>
-</html>
+
+    <script>
+    // Notification Bell Dropdown Logic
+    const bellBtn = document.getElementById('notif-bell');
+    const notifDropdown = document.getElementById('notif-dropdown');
+    const notifBadge = document.getElementById('notif-badge');
+    const notifList = document.getElementById('notif-list');
+    const notifToast = document.getElementById('notif-toast');
+    const notifToastBody = document.getElementById('notif-toast-body');
+    let notifDropdownOpen = false;
+
+    function fetchNotifications() {
+        fetch('/notifications/api/latest')
+            .then(res => res.json())
+            .then(data => {
+                notifList.innerHTML = '';
+                if (data.notifications.length === 0) {
+                    notifList.innerHTML = '<div style="padding: 20px; text-align: center; color: #888;">No notifications</div>';
+                } else {
+                    data.notifications.forEach(n => {
+                        notifList.innerHTML += `<a href="${n.link || '#'}" class="dropdown-item${n.is_read ? '' : ' fw-bold'}">${n.message}<br><small class='text-muted'>${n.created_at}</small></a>`;
+                    });
+                }
+                // Badge
+                if (data.unseen_count > 0) {
+                    notifBadge.style.display = 'inline-block';
+                    notifBadge.textContent = data.unseen_count;
+                } else {
+                    notifBadge.style.display = 'none';
+                }
+            });
+    }
+
+    if (bellBtn) {
+        bellBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            notifDropdownOpen = !notifDropdownOpen;
+            notifDropdown.style.display = notifDropdownOpen ? 'block' : 'none';
+            if (notifDropdownOpen) fetchNotifications();
+        });
+        document.addEventListener('click', function() {
+            notifDropdown.style.display = 'none';
+            notifDropdownOpen = false;
+        });
+        notifDropdown.addEventListener('click', function(e) { e.stopPropagation(); });
+    }
+
+    // Login Pop-up Logic
+    {% if current_user.is_authenticated and session.get('show_login_notif', False) %}
+    fetch('/notifications/api/latest?limit=3')
+        .then(res => res.json())
+        .then(data => {
+            if (data.notifications.length > 0) {
+                notifToastBody.innerHTML = data.notifications.map(n => `<div>${n.message}</div>`).join('');
+                notifToast.style.display = 'block';
+                setTimeout(() => { notifToast.style.display = 'none'; }, 3000);
+            }
+        });
+    {% endif %}
+    </script>
+
+    <!-- Event/Message Badge Counts -->
+    <script>
+    // Event/Message Badge Counts
+    function fetchEventMessageBadges() {
+        fetch('/notifications/api/unseen_counts')
+            .then(res => res.json())
+            .then(data => {
+                const eventBadge = document.getElementById('event-badge');
+                const messageBadge = document.getElementById('message-badge');
+                if (data.unseen_events > 0) {
+                    eventBadge.style.display = 'inline-block';
+                    eventBadge.textContent = data.unseen_events;
+                } else {
+                    eventBadge.style.display = 'none';
+                }
+                if (data.unseen_messages > 0) {
+                    messageBadge.style.display = 'inline-block';
+                    messageBadge.textContent = data.unseen_messages;
+                } else {
+                    messageBadge.style.display = 'none';
+                }
+            });
+    }
+    fetchEventMessageBadges();
+    </script>

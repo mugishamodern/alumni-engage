@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app import db
 from app.models import News
+from app.utils.notifications import create_notification
+from app.models.notification import NotificationType
 
 bp = Blueprint('news', __name__)
 
@@ -36,6 +38,13 @@ def add():
         )
         db.session.add(news_item)
         db.session.commit()
+        # Create notification for news post
+        create_notification(
+            user_id=current_user.id,
+            message=f"You published a news article: {news_item.title}.",
+            notif_type=NotificationType.NEWS,
+            link=url_for('news.detail', id=news_item.id)
+        )
         flash('News article added successfully.', 'success')
         return redirect(url_for('news.index'))
     return render_template('news/add.html')

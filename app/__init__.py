@@ -4,11 +4,25 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from config import Config
+from datetime import datetime
 
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 mail = Mail()
+
+def time_ago(dt):
+    now = datetime.utcnow()
+    diff = now - dt
+    seconds = diff.total_seconds()
+    if seconds < 60:
+        return f"{int(seconds)} seconds ago"
+    elif seconds < 3600:
+        return f"{int(seconds // 60)} minutes ago"
+    elif seconds < 86400:
+        return f"{int(seconds // 3600)} hours ago"
+    else:
+        return f"{int(seconds // 86400)} days ago"
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -21,6 +35,8 @@ def create_app(config_class=Config):
     
     login.login_view = 'auth.login'
     login.login_message_category = 'info'
+    
+    app.jinja_env.filters['time_ago'] = time_ago
     
     from app.routes.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -48,6 +64,9 @@ def create_app(config_class=Config):
     
     from app.routes.contacts import bp as contact_bp
     app.register_blueprint(contact_bp, url_prefix='/contact')
+    
+    from app.routes.notifications import bp as notifications_bp
+    app.register_blueprint(notifications_bp)
     
     return app
 
