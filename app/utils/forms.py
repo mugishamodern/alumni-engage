@@ -23,6 +23,7 @@ class RegistrationForm(FlaskForm):
     bio = TextAreaField('Bio')
     profile_image = FileField('Profile Image')
     
+    
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
@@ -32,6 +33,17 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+        
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(), EqualTo('password')]
+    )
+    submit = SubmitField('Reset Password')
 
 class ProfileForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
@@ -80,16 +92,6 @@ class TestimonialForm(FlaskForm):
     content = TextAreaField('Your Experience', validators=[DataRequired(), Length(min=50)])
     rating = IntegerField('Rating (1-5)', validators=[DataRequired()])
     
-class ResetPasswordRequestForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Request Password Reset')
-
-class ResetPasswordForm(FlaskForm):
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
-    password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password')]
-    )
-    submit = SubmitField('Reset Password')
 
 class RSVPForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
