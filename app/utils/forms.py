@@ -57,15 +57,6 @@ class ProfileForm(FlaskForm):
     bio = TextAreaField('Bio')
     profile_image = FileField('Profile Image')
 
-class EventForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    description = TextAreaField('Description', validators=[DataRequired()])
-    event_date = DateTimeField('Event Date', validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
-    venue = StringField('Venue', validators=[DataRequired()])
-    max_attendees = IntegerField('Max Attendees')
-    event_image = FileField('Event Image')
-    submit = SubmitField('Create Event')
-
 class ContactForm(FlaskForm):
     name = StringField('Your Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -90,16 +81,24 @@ class JobForm(FlaskForm):
     contact_email = StringField('Contact Email', validators=[Email()])
     deadline = DateTimeField('Application Deadline', format='%Y-%m-%d')
 
-class TestimonialForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Your Experience', validators=[DataRequired(), Length(min=50)])
-    rating = IntegerField('Rating (1-5)', validators=[DataRequired()])
-    
-
 class RSVPForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     status = SelectField('Status', choices=[('attending', 'Attending'), ('not_attending', 'Not Attending'), ('maybe', 'Maybe')], validators=[DataRequired()])
     submit = SubmitField('Submit RSVP')
+    
+class EventForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    event_date = DateTimeField('Event Date', validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
+    venue = StringField('Venue', validators=[DataRequired()])
+    max_attendees = IntegerField('Max Attendees')
+    event_image = FileField('Event Image')
+    submit = SubmitField('Create Event')
+    
+class TestimonialForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    content = TextAreaField('Your Experience', validators=[DataRequired(), Length(min=50)])
+    rating = IntegerField('Rating (1-5)', validators=[DataRequired()])
     
 
