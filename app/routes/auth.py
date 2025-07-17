@@ -7,6 +7,32 @@ from app.utils.email import send_password_reset_email
 
 bp = Blueprint('auth', __name__)
 
+@bp.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        print(f"Register attempt with password: '{form.password.data}'")
+        user = User(
+            username=form.username.data,
+            email=form.email.data,
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            graduation_year=form.graduation_year.data,
+            degree=form.degree.data,
+            current_job_title=form.current_job_title.data,
+            location=form.location.data,
+            bio=form.bio.data,
+            profile_image=form.profile_image.data.filename if form.profile_image.data else None
+        )
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!', 'success')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/register.html', title='Register', form=form)
+
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -35,31 +61,6 @@ def logout():
     logout_user()
     return redirect(url_for('main.index'))
 
-@bp.route('/register', methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        print(f"Register attempt with password: '{form.password.data}'")
-        user = User(
-            username=form.username.data,
-            email=form.email.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            graduation_year=form.graduation_year.data,
-            degree=form.degree.data,
-            current_job_title=form.current_job_title.data,
-            location=form.location.data,
-            bio=form.bio.data,
-            profile_image=form.profile_image.data.filename if form.profile_image.data else None
-        )
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!', 'success')
-        return redirect(url_for('auth.login'))
-    return render_template('auth/register.html', title='Register', form=form)
 
 @bp.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
