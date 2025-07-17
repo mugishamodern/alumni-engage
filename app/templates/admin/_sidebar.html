@@ -1,0 +1,390 @@
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-brand::before {
+            content: "⚡";
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-section-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 20px;
+            margin-bottom: 12px;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-radius: 0;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #8b5cf6;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+        }
+
+        .nav-link.active {
+            color: #8b5cf6;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+            border-right: 3px solid #8b5cf6;
+        }
+
+        .nav-link-icon {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-link-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+    </style>
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-brand">
+            Admin Portal
+        </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+        <div class="nav-section">
+            <div class="nav-section-title">Dashboard</div>
+            <div class="nav-item">
+                <a href="#" class="nav-link active">
+                    <span class="nav-link-icon">📊</span>
+                    Overview
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-link-icon">📈</span>
+                    Analytics
+                </a>
+            </div>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">Management</div>
+            <div class="nav-item">
+                <a href="{{ url_for('admin.manage_users') }}" class="nav-link">
+                    <span class="nav-link-icon">👥</span>
+                    Users
+                    <span class="nav-link-badge">{{ user_count }}</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-link-icon">📅</span>
+                    Events
+                    <span class="nav-link-badge">{{ event_count }}</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-link-icon">💼</span>
+                    Jobs
+                    <span class="nav-link-badge">{{ job_count }}</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-link-icon">⭐</span>
+                    Testimonials
+                    <span class="nav-link-badge">{{ testimonial_count }}</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">Communication</div>
+            <div class="nav-item">
+                <a href="{{ url_for('messages.inbox') }}" class="nav-link" id="sidebar-messages-link">
+                    <span class="nav-link-icon">📧</span>
+                    Messages
+                    <span class="nav-link-badge">{{ unread_messages }}</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <button id="open-compose-modal" style="
+                    width: 90%;
+                    margin: 0 5%;
+                    background: linear-gradient(135deg, #f3f4f6, #ede9fe);
+                    color: #7c3aed;
+                    font-weight: 500;
+                    font-size: 0.98rem;
+                    border: none;
+                    border-radius: 18px;
+                    padding: 7px 0 7px 0;
+                    margin-top: 6px;
+                    margin-bottom: 6px;
+                    box-shadow: 0 1px 4px rgba(139, 92, 246, 0.07);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 7px;
+                    letter-spacing: 0.1px;
+                    cursor: pointer;
+                    transition: background 0.18s, box-shadow 0.18s, color 0.18s;
+                "
+                onmouseover="this.style.background='linear-gradient(135deg, #ede9fe, #a5b4fc)'; this.style.color='#6d28d9'; this.style.boxShadow='0 2px 8px rgba(139,92,246,0.10)';"
+                onmouseout="this.style.background='linear-gradient(135deg, #f3f4f6, #ede9fe)'; this.style.color='#7c3aed'; this.style.boxShadow='0 1px 4px rgba(139,92,246,0.07)';"
+                >
+                    <span style="font-size:1rem; display:flex; align-items:center;">&#x2795;</span>
+                    <span>Compose Message</span>
+                </button>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-link-icon">📬</span>
+                    Contacts
+                    <span class="nav-link-badge">{{ unread_contacts }}</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">System</div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-link-icon">⚙️</span>
+                    Settings
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-link-icon">🔒</span>
+                    Security
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-link-icon">📋</span>
+                    Logs
+                </a>
+            </div>
+        </div>
+    </nav>
+<!-- Compose Message Modal -->
+<style>
+#compose-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(30, 41, 59, 0.25);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+#compose-modal .modal-card {
+    background: #fff;
+    border-radius: 20px;
+    max-width: 420px;
+    width: 92vw;
+    margin: auto;
+    box-shadow: 0 12px 48px rgba(139, 92, 246, 0.18), 0 2px 8px rgba(30, 41, 59, 0.08);
+    padding: 36px 28px 28px 28px;
+    position: relative;
+    animation: modalPopIn 0.25s cubic-bezier(.4,2,.6,1) 1;
+}
+@keyframes modalPopIn {
+    0% { transform: scale(0.95) translateY(30px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+#close-compose-modal {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #8b5cf6;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+#close-compose-modal:hover {
+    color: #7c3aed;
+}
+#compose-modal h4 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 22px;
+    color: #7c3aed;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+#compose-modal label {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #374151;
+    margin-bottom: 6px;
+    display: block;
+}
+#compose-modal select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    background: #f8fafc;
+    transition: border 0.2s;
+}
+#compose-modal select:focus {
+    border-color: #8b5cf6;
+    outline: none;
+    background: #fff;
+}
+#compose-modal button[type="submit"] {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    padding: 14px 0;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.08rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.18);
+    width: 100%;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+}
+#compose-modal button[type="submit"]:hover {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+}
+</style>
+<div id="compose-modal">
+    <div class="modal-card">
+        <button id="close-compose-modal">&times;</button>
+        <h4>Send Message</h4>
+        <form id="sidebar-message-form" method="get" action="">
+            <label for="sidebar_recipient_id">To</label>
+            <select name="recipient_id" id="sidebar_recipient_id">
+                <option value="">-- Choose a user --</option>
+                {% for user in users_for_messaging %}
+                    <option value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }} ({{ user.email }})</option>
+                {% endfor %}
+            </select>
+            <button type="submit"><span>💬</span> Compose</button>
+        </form>
+    </div>
+</div>
+<script>
+document.getElementById('open-compose-modal').addEventListener('click', function() {
+    document.getElementById('compose-modal').style.display = 'flex';
+});
+document.getElementById('close-compose-modal').addEventListener('click', function() {
+    document.getElementById('compose-modal').style.display = 'none';
+});
+document.getElementById('sidebar-message-form').addEventListener('submit', function(e) {
+    var select = document.getElementById('sidebar_recipient_id');
+    if (select.value) {
+        window.location = "{{ url_for('messages.compose', recipient_id=0) }}".replace('/0', '/' + select.value);
+    }
+    e.preventDefault();
+});
+window.addEventListener('click', function(e) {
+    var modal = document.getElementById('compose-modal');
+    if (e.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+</script>
+</aside>

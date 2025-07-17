@@ -84,10 +84,11 @@
                     <a href="mailto:{{ user.email }}" style="flex: 1; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 12px 16px; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 500; text-decoration: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
                         <span>📧</span> Email
                     </a>
-                    
-                    <button disabled style="flex: 1; background: #f1f5f9; color: #94a3b8; padding: 12px 16px; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 500; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                    {% if user.id != current_user.id %}
+                    <a href="{{ url_for('messages.compose', recipient_id=user.id) }}" style="flex: 1; background: linear-gradient(135deg, #06b6d4, #8b5cf6); color: white; padding: 12px 16px; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 500; text-decoration: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);">
                         <span>💬</span> Message
-                    </button>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
             {% else %}
@@ -293,3 +294,45 @@
     });
 </script>
 {% endblock %}
+
+
+
+
+from app import db
+from app.models.user import User
+
+# Create a user
+u1 = User(
+    username='johndoe',
+    email='john@example.com',
+    first_name='John',
+    last_name='Doe',
+    graduation_year=2020,
+    degree='BSc Computer Science',
+    current_job_title='Software Engineer',
+    location='New York',
+    bio='Excited to connect!',
+    is_admin=False
+)
+u1.set_password('yourpassword')  # Set a password
+
+# Add and commit to the database
+db.session.add(u1)
+db.session.commit()
+
+# Repeat for more users
+u3 = User(
+    username='bossdoe',
+    email='boss@example.com',
+    first_name='Boss',
+    last_name='Doe',
+    graduation_year=2018,
+    degree='BS Software Engineering',
+    current_job_title='Software Architect',
+    location='San Diego',
+    bio='Alumni network philanthropist!',
+    is_admin=False
+)
+u3.set_password('0112BossDoe-')
+db.session.add(u3)
+db.session.commit()

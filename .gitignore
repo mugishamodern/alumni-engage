@@ -1,1 +1,61 @@
+# Python bytecode and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.env/
+.venv/
 myenv/
+
+# Environment variables
+.env
+.flaskenv
+
+# Logs and temporary files
+*.log
+*.log.*
+*.pid
+.cache/
+
+# Development-specific
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Database and instance
+*.db
+*.sqlite3
+instance/
+
+# Static and build
+static/uploads/
+build/
+dist/
+*.egg-info/
+
+# Testing and coverage
+.pytest_cache/
+coverage/
+.coverage
+htmlcov/
+
+# Miscellaneous
+*.bak
+*.tmp
+*.backup
+
+*.whl
+
+# Custom ignores for sensitive and local files
+config.py
+requirements.txt
+alumni_env/
+env/
+psycopg2_binary-2.9.10-cp313-cp313-win_amd64.whl

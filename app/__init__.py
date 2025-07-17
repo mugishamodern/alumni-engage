@@ -10,6 +10,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 mail = Mail()
+jwt = None  # Placeholder for PyJWT, to be initialized later
 
 def time_ago(dt):
     now = datetime.utcnow()
@@ -36,7 +37,13 @@ def create_app(config_class=Config):
     login.login_view = 'auth.login'
     login.login_message_category = 'info'
     
+<<<<<<< HEAD
     app.jinja_env.filters['time_ago'] = time_ago
+=======
+    # Import PyJWT
+    import jwt as pyjwt
+    jwt =pyjwt
+>>>>>>> fae39ae02bff209e63322e61fb05b93d2ebc1b01
     
     from app.routes.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -64,6 +71,33 @@ def create_app(config_class=Config):
     
     from app.routes.contacts import bp as contact_bp
     app.register_blueprint(contact_bp, url_prefix='/contact')
+
+    from app.routes.messages import bp as messages_bp
+    app.register_blueprint(messages_bp, url_prefix='/messages')
+
+    from app.models.user import User
+    from app.models.event import Event
+    from app.models.job import Job
+    from app.models.testimonial import Testimonial
+    from app.models.message import Message
+    from app.models.contact import ContactSubmission
+
+    @app.context_processor
+    def inject_sidebar_stats():
+        user_count = User.query.count()
+        event_count = Event.query.filter_by(is_active=True).count()
+        job_count = Job.query.filter_by(is_approved=True, is_active=True).count()
+        testimonial_count = Testimonial.query.filter_by(is_approved=True).count()
+        # unread_messages = Message.query.filter_by(is_read=False).count()
+        unread_contacts = ContactSubmission.query.filter_by(is_read=False).count()
+        return dict(
+            user_count=user_count,
+            event_count=event_count,
+            job_count=job_count,
+            testimonial_count=testimonial_count,
+            # unread_messages=unread_messages,
+            unread_contacts=unread_contacts
+        )
     
     from app.routes.notifications import bp as notifications_bp
     app.register_blueprint(notifications_bp)

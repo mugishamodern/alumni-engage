@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request, Blueprint
+from flask import current_app, render_template, redirect, url_for, flash, request, Blueprint
 from flask_login import login_user, logout_user, current_user, login_required
 from app import db
 from app.models import User
@@ -20,6 +20,9 @@ def login():
             flash('Invalid username or password', 'danger')
             return redirect(url_for('auth.login'))
         login_user(user, remember=form.remember_me.data)
+        if user.is_admin:
+            flash('Welcome Admin! You have successfully logged in.', 'success')
+            return redirect(url_for('admin.dashboard'))
         next_page = request.args.get('next')
         if not next_page or not next_page.startswith('/'):
             next_page = url_for('main.index')
@@ -66,9 +69,19 @@ def reset_password_request():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
-            send_password_reset_email(user)
-        flash('Check your email for the instructions to reset your password', 'info')
-        return redirect(url_for('auth.login'))
+            try:
+                token = user.get_reset_password_token()
+                send_password_reset_email(user, token)
+                flash('Check your email for the instructions to reset your password', 'info')
+                return redirect(url_for('auth.login'))
+            except Exception as e:
+                current_app.logger.error(f"Error during password reset: {str(e)}")
+                flash('An error occurred while sending the reset email. Please try again.', 'danger')
+                return render_template('auth/reset_password_request.html', title='Reset Password', form=form)
+        else:
+            flash('No account found with that email.', 'danger')
+            return render_template('auth/reset_password_request.html', title='Reset Password', form=form)
+
     return render_template('auth/reset_password_request.html', title='Reset Password', form=form)
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
@@ -84,4 +97,4 @@ def reset_password(token):
         db.session.commit()
         flash('Your password has been reset.', 'success')
         return redirect(url_for('auth.login'))
-    return render_template('auth/reset_password.html', form=form)
+    return render_template('auth/reset_password.html', form=form, title='Reset Password',token=token)

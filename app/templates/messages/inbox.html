@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Inbox{% endblock %}
+{% block content %}
+<section style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); min-height: 100vh; padding: 80px 0;">
+    <div style="max-width: 900px; margin: 0 auto; padding: 0 20px;">
+        <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0;">
+            <div style="background: linear-gradient(135deg, #8b5cf6, #06b6d4); padding: 40px; color: white;">
+                <h2 style="margin: 0; font-size: 2rem; font-weight: 600;">Inbox</h2>
+            </div>
+            <div style="padding: 40px;">
+                {% if conversations and conversations|length > 0 %}
+                <div style="display: grid; gap: 24px;">
+                    {% for message in conversations %}
+                        {% set other_user = message.sender if message.sender_id != current_user.id else message.recipient %}
+                        {% set bg_color = '#f3e8ff' if not message.is_read and message.recipient_id == current_user.id else '#f8fafc' %}
+                        <div style="background: {{ bg_color }}; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.08); border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 24px;">
+                            <div>
+                                <div style="font-weight: 600; color: #1a1a1a; font-size: 1.1rem;">
+                                    {{ other_user.first_name }} {{ other_user.last_name }}
+                                </div>
+                                <div style="color: #64748b; font-size: 0.95rem; margin-top: 2px;">
+                                    {{ message.subject if message.subject else 'No subject' }}
+                                </div>
+                                <div style="color: #94a3b8; font-size: 0.9rem; margin-top: 2px;">
+                                    {{ message.sent_at.strftime('%Y-%m-%d %H:%M') if message.sent_at else 'Unknown date' }}
+                                </div>
+                            </div>
+                            <a href="{{ url_for('messages.conversation', user_id=other_user.id) }}"
+                               style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 12px 28px; border: none; border-radius: 12px; font-size: 1rem; font-weight: 500; text-decoration: none; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);">
+                                <span>💬</span> View Conversation
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div style="background: #f8fafc; border-radius: 16px; padding: 40px; text-align: center; border: 1px dashed #e2e8f0;">
+                    <div style="width: 80px; height: 80px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 2rem;">
+                        ✉️
+                    </div>
+                    <h3 style="font-size: 1.5rem; font-weight: 600; color: #64748b; margin-bottom: 8px;">No conversations yet</h3>
+                    <p style="color: #94a3b8; font-size: 1rem; margin: 0;">Start a conversation with your fellow alumni!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
