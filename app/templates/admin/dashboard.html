@@ -634,7 +634,7 @@
                             <div class="stat-card-icon">💼</div>
                         </div>
                         <div class="stat-card-value">{{ job_count }}</div>
-                        <a href="#" class="stat-card-link">View Jobs →</a>
+                        <a href="{{ url_for('admin.manage_jobs') }}" class="stat-card-link">Manage Jobs →</a>
                     </div>
                     
                     <div class="stat-card" style="--card-gradient: linear-gradient(135deg, #f59e0b, #d97706);">
@@ -643,7 +643,7 @@
                             <div class="stat-card-icon">⭐</div>
                         </div>
                         <div class="stat-card-value">{{ testimonial_count }}</div>
-                        <a href="#" class="stat-card-link">View Testimonials →</a>
+                        <a href="{{ url_for('admin.manage_testimonials') }}" class="stat-card-link">Manage Testimonials →</a>
                     </div>
                 </div>
                 

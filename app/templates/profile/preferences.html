@@ -1,31 +1,341 @@
 {% extends "base.html" %}
 {% block title %}Notification Preferences{% endblock %}
+
+{% block head %}
+<style>
+    .notification-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .notification-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header-custom {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        padding: 20px 25px;
+        border-bottom: none;
+    }
+    
+    .card-header-custom h3 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .preference-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 25px;
+        border-bottom: 1px solid #f1f5f9;
+        transition: all 0.3s ease;
+    }
+    
+    .preference-item:last-child {
+        border-bottom: none;
+    }
+    
+    .preference-item:hover {
+        background-color: #f8fafc;
+    }
+    
+    .preference-info {
+        flex: 1;
+    }
+    
+    .preference-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 4px;
+    }
+    
+    .preference-description {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin: 0;
+    }
+    
+    .custom-switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        margin-left: 20px;
+    }
+    
+    .custom-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        transition: 0.4s;
+        border-radius: 34px;
+    }
+    
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    input:checked + .slider {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+    
+    .save-btn {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .save-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    }
+    
+    .save-btn:active {
+        transform: translateY(0);
+    }
+    
+    .container-custom {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    
+    .breadcrumb-custom {
+        background: none;
+        padding: 0 0 20px 0;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumb-custom a {
+        color: #6366f1;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .breadcrumb-custom a:hover {
+        color: #4f46e5;
+    }
+    
+    .breadcrumb-custom span {
+        color: #64748b;
+        margin: 0 8px;
+    }
+    
+    .form-section {
+        margin-bottom: 30px;
+    }
+    
+    @media (max-width: 768px) {
+        .container-custom {
+            padding: 20px 15px;
+        }
+        
+        .preference-item {
+            padding: 15px 20px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .custom-switch {
+            margin-left: 0;
+            align-self: flex-end;
+        }
+        
+        .card-header-custom {
+            padding: 15px 20px;
+        }
+        
+        .card-header-custom h3 {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header" style="background: var(--purple-gradient); color: white;">
-                    <h3 class="mb-0">Notification Preferences</h3>
-                </div>
-                <div class="card-body">
-                    <form method="post" action="{{ url_for('profile.notification_preferences') }}">
-                        <div class="list-group mb-4">
-                            {% for pref in preferences %}
-                            <label class="list-group-item d-flex justify-content-between align-items-center" style="border: none;">
-                                <span class="fw-semibold" style="color: var(--purple-dark);">{{ pref.type|capitalize }}</span>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" name="enabled_{{ pref.type }}" value="1" id="switch_{{ pref.type }}" {% if pref.enabled %}checked{% endif %} style="background: var(--purple-primary); border-color: var(--purple-primary);">
-                                    <label class="form-check-label visually-hidden" for="switch_{{ pref.type }}">Enable {{ pref.type }}</label>
-                                </div>
-                            </label>
-                            {% endfor %}
+<div class="container-custom">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-custom">
+        <a href="{{ url_for('main.index') }}">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <span>/</span>
+        <a href="{{ url_for('profile.index') }}">Profile</a>
+        <span>/</span>
+        <span>Notification Preferences</span>
+    </nav>
+    
+    <!-- Main Card -->
+    <div class="notification-card">
+        <div class="card-header-custom">
+            <h3>
+                <i class="fas fa-bell"></i>
+                Notification Preferences
+            </h3>
+        </div>
+        
+        <form method="post" action="{{ url_for('profile.notification_preferences') }}">
+            <div class="form-section">
+                {% for pref in preferences %}
+                <div class="preference-item">
+                    <div class="preference-info">
+                        <div class="preference-title">
+                            {% if pref.type == 'event' %}
+                                <i class="fas fa-calendar-alt" style="color: #6366f1; margin-right: 8px;"></i>
+                                Event Notifications
+                            {% elif pref.type == 'news' %}
+                                <i class="fas fa-newspaper" style="color: #6366f1; margin-right: 8px;"></i>
+                                News Updates
+                            {% elif pref.type == 'message' %}
+                                <i class="fas fa-envelope" style="color: #6366f1; margin-right: 8px;"></i>
+                                Message Notifications
+                            {% elif pref.type == 'job' %}
+                                <i class="fas fa-briefcase" style="color: #6366f1; margin-right: 8px;"></i>
+                                Job Opportunities
+                            {% elif pref.type == 'alumni' %}
+                                <i class="fas fa-users" style="color: #6366f1; margin-right: 8px;"></i>
+                                Alumni Updates
+                            {% else %}
+                                <i class="fas fa-bell" style="color: #6366f1; margin-right: 8px;"></i>
+                                {{ pref.type|capitalize }} Notifications
+                            {% endif %}
                         </div>
-                        <button type="submit" class="btn btn-purple w-100">Save Preferences</button>
-                    </form>
+                        <p class="preference-description">
+                            {% if pref.type == 'event' %}
+                                Get notified about upcoming events, event reminders, and new event announcements
+                            {% elif pref.type == 'news' %}
+                                Receive updates about latest news, articles, and announcements
+                            {% elif pref.type == 'message' %}
+                                Get alerts when you receive new messages from other alumni
+                            {% elif pref.type == 'job' %}
+                                Be notified about new job postings and career opportunities
+                            {% elif pref.type == 'alumni' %}
+                                Stay updated with alumni network activities and member updates
+                            {% else %}
+                                Manage your {{ pref.type }} notification preferences
+                            {% endif %}
+                        </p>
+                    </div>
+                    
+                    <label class="custom-switch">
+                        <input type="checkbox" 
+                               name="enabled_{{ pref.type }}" 
+                               value="1" 
+                               {% if pref.enabled %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
                 </div>
+                {% endfor %}
+            </div>
+            
+            <div style="padding: 25px;">
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-save"></i>
+                    Save Preferences
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Additional Info Card -->
+    <div class="notification-card" style="margin-top: 30px;">
+        <div style="padding: 25px;">
+            <h4 style="color: #1e293b; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-info-circle" style="color: #6366f1;"></i>
+                How Notifications Work
+            </h4>
+            <div style="color: #64748b; line-height: 1.6;">
+                <p style="margin-bottom: 10px;">• <strong>Real-time alerts:</strong> You'll see notifications in the bell icon in the navigation bar</p>
+                <p style="margin-bottom: 10px;">• <strong>Email notifications:</strong> Important updates will also be sent to your registered email</p>
+                <p style="margin-bottom: 10px;">• <strong>Customizable:</strong> You can enable or disable specific types of notifications</p>
+                <p style="margin: 0;">• <strong>Privacy:</strong> Your notification preferences are private and secure</p>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth transitions for switch toggles
+    const switches = document.querySelectorAll('.custom-switch input');
+    
+    switches.forEach(function(switchInput) {
+        switchInput.addEventListener('change', function() {
+            // Add a subtle animation effect
+            const slider = this.nextElementSibling;
+            slider.style.transform = 'scale(1.05)';
+            
+            setTimeout(function() {
+                slider.style.transform = 'scale(1)';
+            }, 150);
+        });
+    });
+    
+    // Form validation and submission feedback
+    const form = document.querySelector('form');
+    const saveBtn = document.querySelector('.save-btn');
+    
+    form.addEventListener('submit', function(e) {
+        // Show loading state
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        saveBtn.disabled = true;
+        
+        // Reset button after a delay (in case of errors)
+        setTimeout(function() {
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Preferences';
+            saveBtn.disabled = false;
+        }, 3000);
+    });
+});
+</script>
 {% endblock %} 
