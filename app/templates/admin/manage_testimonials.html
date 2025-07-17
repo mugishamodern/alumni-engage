@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Testimonials{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Testimonials</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% for testimonial in testimonials.items %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">{{ testimonial.title or 'Untitled' }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">User ID: {{ testimonial.user_id }}</h6>
+                        </div>
+                        <div>
+                            <span class="badge bg-secondary">Rating: {{ testimonial.rating or 'N/A' }}</span>
+                        </div>
+                    </div>
+                    <p class="card-text mt-3">{{ testimonial.content|truncate(200) }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted">Posted {{ testimonial.created_at|time_ago }}</span>
+                            {% if not testimonial.is_approved %}
+                                <span class="badge bg-warning text-dark ms-2">Pending Approval</span>
+                            {% endif %}
+                            {% if testimonial.is_featured %}
+                                <span class="badge bg-success ms-2">Featured</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <!-- Admin controls: Approve, Feature, Delete -->
+                            {% if not testimonial.is_approved %}
+                            <a href="#" class="btn btn-success btn-sm">Approve</a>
+                            {% endif %}
+                            {% if not testimonial.is_featured %}
+                            <a href="#" class="btn btn-info btn-sm">Feature</a>
+                            {% endif %}
+                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No testimonials found.</div>
+            {% endfor %}
+            <!-- Pagination -->
+            <nav aria-label="Testimonial pagination">
+                <ul class="pagination justify-content-center">
+                    {% if testimonials.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin.manage_testimonials', page=testimonials.prev_num) }}">Previous</a>
+                    </li>
+                    {% endif %}
+                    {% for page_num in testimonials.iter_pages() %}
+                        {% if page_num %}
+                            <li class="page-item {% if testimonials.page == page_num %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('admin.manage_testimonials', page=page_num) }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if testimonials.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin.manage_testimonials', page=testimonials.next_num) }}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -9,6 +9,8 @@ from app.utils.forms import ContactForm
 from app.models import ContactSubmission
 from app import db
 import logging
+from app.utils.notifications import create_notification
+from app.models.notification import NotificationType
 
 @bp.route('/contacts', methods=['GET', 'POST'])
 def index():
@@ -25,6 +27,14 @@ def index():
             )
             db.session.add(contact)
             db.session.commit()
+            # Create notification for contact submission (if user is logged in)
+            if contact.user_id:
+                create_notification(
+                    user_id=contact.user_id,
+                    message=f"Your inquiry '{contact.subject}' was submitted.",
+                    notif_type=NotificationType.CONTACT,
+                    link=url_for('contacts.index')
+                )
             flash('Your message has been sent successfully.', 'success')
             logger.info(f"New contact submission from {contact.name} ({contact.email})")
             return redirect(url_for('contacts.index'))

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Notification Preferences{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header" style="background: var(--purple-gradient); color: white;">
+                    <h3 class="mb-0">Notification Preferences</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('profile.notification_preferences') }}">
+                        <div class="list-group mb-4">
+                            {% for pref in preferences %}
+                            <label class="list-group-item d-flex justify-content-between align-items-center" style="border: none;">
+                                <span class="fw-semibold" style="color: var(--purple-dark);">{{ pref.type|capitalize }}</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="enabled_{{ pref.type }}" value="1" id="switch_{{ pref.type }}" {% if pref.enabled %}checked{% endif %} style="background: var(--purple-primary); border-color: var(--purple-primary);">
+                                    <label class="form-check-label visually-hidden" for="switch_{{ pref.type }}">Enable {{ pref.type }}</label>
+                                </div>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-purple w-100">Save Preferences</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

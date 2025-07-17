@@ -4,6 +4,8 @@ from app import db
 from app.models import Event, RSVP
 from app.utils.forms import EventForm, RSVPForm
 from app.utils.decorators import admin_required
+from app.utils.notifications import create_notification
+from app.models.notification import NotificationType
 
 bp = Blueprint('events', __name__)
 
@@ -49,6 +51,13 @@ def event_detail(event_id):
             )
             db.session.add(rsvp)
         db.session.commit()
+        # Create notification for RSVP
+        create_notification(
+            user_id=current_user.id,
+            message=f"You RSVP'd to {event.title} as {form.status.data}.",
+            notif_type=NotificationType.RSVP,
+            link=url_for('events.event_detail', event_id=event.id)
+        )
         flash('Your RSVP has been updated', 'success')
         return redirect(url_for('events.event_detail', event_id=event.id))
     

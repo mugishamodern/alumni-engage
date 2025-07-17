@@ -1,4 +1,4 @@
-"""empty message
+"""Initial migration
 
 Revision ID: 95b8134cdec9
 Revises: 

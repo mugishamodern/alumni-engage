@@ -86,4 +86,31 @@ def manage_events():
         page=page, per_page=current_app.config['EVENTS_PER_PAGE'], error_out=False)
     return render_template('admin/manage_events.html', title='Manage Events', events=events)
 
+@bp.route('/jobs')
+@login_required
+@admin_required
+def manage_jobs():
+    page = request.args.get('page', 1, type=int)
+    jobs = Job.query.order_by(Job.created_at.desc()).paginate(
+        page=page, per_page=10, error_out=False)
+    return render_template('admin/manage_jobs.html', title='Manage Jobs', jobs=jobs)
+
+@bp.route('/testimonials')
+@login_required
+@admin_required
+def manage_testimonials():
+    page = request.args.get('page', 1, type=int)
+    testimonials = Testimonial.query.order_by(Testimonial.created_at.desc()).paginate(
+        page=page, per_page=10, error_out=False)
+    return render_template('admin/manage_testimonials.html', title='Manage Testimonials', testimonials=testimonials)
+
+@bp.route('/contact_submissions')
+@login_required
+@admin_required
+def contact_submissions():
+    page = request.args.get('page', 1, type=int)
+    contacts = ContactSubmission.query.order_by(ContactSubmission.created_at.desc()).paginate(
+        page=page, per_page=10, error_out=False)
+    return render_template('admin/contact_submissions.html', title='Contact Submissions', contacts=contacts)
+
 # Similar routes for managing news, jobs, testimonials, and contact submissions

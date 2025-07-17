@@ -8,6 +8,8 @@ from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 from app.models import Job
 from app import db
+from app.utils.notifications import create_notification
+from app.models.notification import NotificationType
 
 @bp.route('/jobs')
 @login_required
@@ -49,6 +51,13 @@ def create():
             )
             db.session.add(job)
             db.session.commit()
+            # Create notification for job posting
+            create_notification(
+                user_id=current_user.id,
+                message=f"You posted a new job: {job.title} at {job.company}.",
+                notif_type=NotificationType.JOB,
+                link=url_for('jobs.detail', id=job.id)
+            )
             flash('Job posting created successfully.', 'success')
             logger.info(f"Job created: {job.title} by user {current_user.username}")
             return redirect(url_for('jobs.index'))
