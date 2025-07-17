@@ -8,6 +8,7 @@ class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
+    submit = SubmitField('LOGIN')
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=25)])
@@ -22,8 +23,8 @@ class RegistrationForm(FlaskForm):
     location = StringField('Location')
     bio = TextAreaField('Bio')
     profile_image = FileField('Profile Image')
-    
-    
+    submit = SubmitField('CREATE ACCOUNT')
+
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
