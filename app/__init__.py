@@ -37,13 +37,11 @@ def create_app(config_class=Config):
     login.login_view = 'auth.login'
     login.login_message_category = 'info'
     
-<<<<<<< HEAD
     app.jinja_env.filters['time_ago'] = time_ago
-=======
     # Import PyJWT
     import jwt as pyjwt
-    jwt =pyjwt
->>>>>>> fae39ae02bff209e63322e61fb05b93d2ebc1b01
+    global jwt
+    jwt = pyjwt
     
     from app.routes.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
