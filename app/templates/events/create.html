@@ -3,31 +3,200 @@
 {% block title %}Create Event - Alumni Connect{% endblock %}
 
 {% block content %}
-<section style="padding: 40px 0; max-width: 600px; margin: 0 auto;">
-    <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 20px; color: #1a1a1a;">Create Event</h1>
-    <form method="POST" action="{{ url_for('events.create_event') }}" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        <div style="margin-bottom: 15px;">
-            {{ form.title.label }}<br>
-            {{ form.title(size=40, class="form-control") }}
+<!-- Create Event Section -->
+<section style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); min-height: 100vh; padding: 80px 0;">
+    <div style="max-width: 700px; margin: 0 auto; padding: 0 20px;">
+        
+        <!-- Back Button -->
+        <div style="margin-bottom: 40px;">
+            <a href="{{ url_for('events.event_list') }}" style="display: inline-flex; align-items: center; gap: 8px; color: #8b5cf6; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: all 0.2s ease; padding: 8px 16px; border-radius: 8px; background: rgba(139, 92, 246, 0.1);">
+                <span style="font-size: 1.2rem;">←</span> Back to Events
+            </a>
         </div>
-        <div style="margin-bottom: 15px;">
-            {{ form.description.label }}<br>
-            {{ form.description(rows=5, class="form-control") }}
+
+        <!-- Main Content Card -->
+        <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0;">
+            
+            <!-- Header with gradient -->
+            <div style="background: linear-gradient(135deg, #8b5cf6, #06b6d4); padding: 40px; color: white; position: relative; overflow: hidden;">
+                <!-- Decorative elements -->
+                <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; opacity: 0.6;"></div>
+                <div style="position: absolute; bottom: -30px; left: -30px; width: 120px; height: 120px; background: rgba(255, 255, 255, 0.05); border-radius: 50%;"></div>
+                
+                <div style="position: relative; z-index: 1;">
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <div style="background: rgba(255, 255, 255, 0.2); padding: 16px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                            <div style="width: 32px; height: 32px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #8b5cf6; font-weight: 600; font-size: 1.2rem;">
+                                ✨
+                            </div>
+                        </div>
+                        <div>
+                            <h1 style="margin: 0; font-size: 2.5rem; font-weight: 600; line-height: 1.2;">Create Event</h1>
+                            <p style="margin: 0; font-size: 1.1rem; opacity: 0.9; font-weight: 400;">Plan your next Alumni Connect gathering</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Content -->
+            <div style="padding: 40px 50px;">
+                <form method="POST" action="{{ url_for('events.create_event') }}" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Event Title -->
+                    <div style="margin-bottom: 32px;">
+                        <label style="display: block; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">📝</div>
+                            Event Title
+                        </label>
+                        {{ form.title(size=40, class="form-control", style="width: 100%; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-weight: 500; color: #374151; background: white; transition: all 0.2s ease;", placeholder="Enter a compelling event title...") }}
+                    </div>
+
+                    <!-- Event Description -->
+                    <div style="margin-bottom: 32px;">
+                        <label style="display: block; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #10b981, #06b6d4); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">📋</div>
+                            Event Description
+                        </label>
+                        {{ form.description(rows=5, class="form-control", style="width: 100%; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-weight: 500; color: #374151; background: white; transition: all 0.2s ease; resize: vertical; min-height: 120px;", placeholder="Describe your event in detail...") }}
+                    </div>
+
+                    <!-- Event Date & Time -->
+                    <div style="margin-bottom: 32px;">
+                        <label style="display: block; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">📅</div>
+                            Event Date & Time
+                        </label>
+                        {{ form.event_date(class="form-control", type="datetime-local", style="width: 100%; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-weight: 500; color: #374151; background: white; transition: all 0.2s ease;") }}
+                    </div>
+
+                    <!-- Venue -->
+                    <div style="margin-bottom: 32px;">
+                        <label style="display: block; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">📍</div>
+                            Venue
+                        </label>
+                        {{ form.venue(size=40, class="form-control", style="width: 100%; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-weight: 500; color: #374151; background: white; transition: all 0.2s ease;", placeholder="Enter event location...") }}
+                    </div>
+
+                    <!-- Max Attendees -->
+                    <div style="margin-bottom: 40px;">
+                        <label style="display: block; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #06b6d4, #0891b2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">👥</div>
+                            Maximum Attendees
+                        </label>
+                        {{ form.max_attendees(class="form-control", style="width: 100%; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-weight: 500; color: #374151; background: white; transition: all 0.2s ease;", placeholder="Enter maximum number of attendees...") }}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div style="text-align: center; padding-top: 20px;">
+                        {{ form.submit(class="btn btn-primary", style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 18px 36px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; transition: all 0.2s ease; box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3); min-width: 200px; justify-content: center;") }}
+                    </div>
+                </form>
+            </div>
         </div>
-        <div style="margin-bottom: 15px;">
-            {{ form.event_date.label }}<br>
-            {{ form.event_date(class="form-control", type="datetime-local") }}
-        </div>
-        <div style="margin-bottom: 15px;">
-            {{ form.venue.label }}<br>
-            {{ form.venue(size=40, class="form-control") }}
-        </div>
-        <div style="margin-bottom: 15px;">
-            {{ form.max_attendees.label }}<br>
-            {{ form.max_attendees(class="form-control") }}
-        </div>
-        {{ form.submit(class="btn btn-primary") }}
-    </form>
+    </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Back button hover effect
+        const backButton = document.querySelector('a[href*="events.event_list"]');
+        if (backButton) {
+            backButton.addEventListener('mouseenter', function() {
+                this.style.background = 'rgba(139, 92, 246, 0.2)';
+                this.style.transform = 'translateX(-4px)';
+            });
+            
+            backButton.addEventListener('mouseleave', function() {
+                this.style.background = 'rgba(139, 92, 246, 0.1)';
+                this.style.transform = 'translateX(0)';
+            });
+        }
+
+        // Form inputs focus effects
+        const inputs = document.querySelectorAll('input[type="text"], input[type="datetime-local"], input[type="number"], textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#8b5cf6';
+                this.style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.1)';
+                this.style.transform = 'translateY(-1px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#e2e8f0';
+                this.style.boxShadow = 'none';
+                this.style.transform = 'translateY(0)';
+            });
+
+            // Input hover effects
+            input.addEventListener('mouseenter', function() {
+                if (this !== document.activeElement) {
+                    this.style.borderColor = '#cbd5e1';
+                }
+            });
+            
+            input.addEventListener('mouseleave', function() {
+                if (this !== document.activeElement) {
+                    this.style.borderColor = '#e2e8f0';
+                }
+            });
+        });
+
+        // Submit button hover effect
+        const submitButton = document.querySelector('input[type="submit"]');
+        if (submitButton) {
+            // Add icon to submit button
+            submitButton.value = '✨ Create Event';
+            
+            submitButton.addEventListener('mouseenter', function() {
+                this.style.background = 'linear-gradient(135deg, #7c3aed, #6d28d9)';
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 8px 20px rgba(139, 92, 246, 0.4)';
+            });
+            
+            submitButton.addEventListener('mouseleave', function() {
+                this.style.background = 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.3)';
+            });
+        }
+
+        // Smooth animations for form sections
+        const formSections = document.querySelectorAll('form > div');
+        formSections.forEach((section, index) => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                section.style.opacity = '1';
+                section.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+
+        // Character counter for description (optional enhancement)
+        const descriptionField = document.querySelector('textarea[name="description"]');
+        if (descriptionField) {
+            const maxLength = 500; // You can adjust this
+            const counterDiv = document.createElement('div');
+            counterDiv.style.cssText = 'text-align: right; margin-top: 8px; font-size: 0.9rem; color: #64748b;';
+            counterDiv.textContent = `0/${maxLength} characters`;
+            descriptionField.parentNode.appendChild(counterDiv);
+            
+            descriptionField.addEventListener('input', function() {
+                const length = this.value.length;
+                counterDiv.textContent = `${length}/${maxLength} characters`;
+                
+                if (length > maxLength * 0.9) {
+                    counterDiv.style.color = '#f59e0b';
+                } else {
+                    counterDiv.style.color = '#64748b';
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

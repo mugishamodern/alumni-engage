@@ -3,26 +3,266 @@
 {% block title %}Add News Article - Alumni Connect{% endblock %}
 
 {% block content %}
-<section style="padding: 40px 0; max-width: 600px; margin: 0 auto;">
-    <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 20px; color: #1a1a1a;">Add News Article</h1>
-    <form method="POST" action="{{ url_for('news.add') }}">
-        <div style="margin-bottom: 15px;">
-            <label for="title" style="display: block; font-weight: 600; margin-bottom: 5px;">Title</label>
-            <input type="text" id="title" name="title" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+<!-- Add News Article Section -->
+<section style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); min-height: 100vh; padding: 80px 0;">
+    <div style="max-width: 700px; margin: 0 auto; padding: 0 20px;">
+        
+        <!-- Back Button -->
+        <div style="margin-bottom: 40px;">
+<a href="{{ url_for('news.index') }}" style="display: inline-flex; align-items: center; gap: 8px; color: #8b5cf6; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: all 0.2s ease; padding: 8px 16px; border-radius: 8px; background: rgba(139, 92, 246, 0.1);">
+                <span style="font-size: 1.2rem;">←</span> Back to News
+            </a>
         </div>
-        <div style="margin-bottom: 15px;">
-            <label for="summary" style="display: block; font-weight: 600; margin-bottom: 5px;">Summary</label>
-            <textarea id="summary" name="summary" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+
+        <!-- Main Content Card -->
+        <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0;">
+            
+            <!-- Header with gradient -->
+            <div style="background: linear-gradient(135deg, #06b6d4, #0891b2); padding: 40px; color: white; position: relative; overflow: hidden;">
+                <!-- Decorative elements -->
+                <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; opacity: 0.6;"></div>
+                <div style="position: absolute; bottom: -30px; left: -30px; width: 120px; height: 120px; background: rgba(255, 255, 255, 0.05); border-radius: 50%;"></div>
+                
+                <div style="position: relative; z-index: 1;">
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <div style="background: rgba(255, 255, 255, 0.2); padding: 16px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                            <div style="width: 32px; height: 32px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #06b6d4; font-weight: 600; font-size: 1.2rem;">
+                                📰
+                            </div>
+                        </div>
+                        <div>
+                            <h1 style="margin: 0; font-size: 2.5rem; font-weight: 600; line-height: 1.2;">Add News Article</h1>
+                            <p style="margin: 0; font-size: 1.1rem; opacity: 0.9; font-weight: 400;">Share the latest updates with your alumni network</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Content -->
+            <div style="padding: 40px 50px;">
+                <form method="POST" action="{{ url_for('news.add') }}">
+                    
+                    <!-- Article Title -->
+                    <div style="margin-bottom: 32px;">
+                        <label for="title" style="display: block; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #06b6d4, #0891b2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">📝</div>
+                            Article Title
+                        </label>
+                        <input type="text" id="title" name="title" required style="width: 100%; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-weight: 500; color: #374151; background: white; transition: all 0.2s ease;" placeholder="Enter a compelling headline...">
+                    </div>
+
+                    <!-- Article Summary -->
+                    <div style="margin-bottom: 32px;">
+                        <label for="summary" style="display: block; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">📋</div>
+                            Summary
+                        </label>
+                        <textarea id="summary" name="summary" rows="3" style="width: 100%; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-weight: 500; color: #374151; background: white; transition: all 0.2s ease; resize: vertical; min-height: 90px;" placeholder="Write a brief summary of the article..."></textarea>
+                        <div style="text-align: right; margin-top: 8px; font-size: 0.9rem; color: #64748b;">
+                            <span id="summary-counter">0/200 characters</span>
+                        </div>
+                    </div>
+
+                    <!-- Article Content -->
+                    <div style="margin-bottom: 32px;">
+                        <label for="content" style="display: block; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">📄</div>
+                            Article Content
+                        </label>
+                        <textarea id="content" name="content" rows="8" required style="width: 100%; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-weight: 500; color: #374151; background: white; transition: all 0.2s ease; resize: vertical; min-height: 200px;" placeholder="Write the full article content here..."></textarea>
+                        <div style="text-align: right; margin-top: 8px; font-size: 0.9rem; color: #64748b;">
+                            <span id="content-counter">0 characters</span>
+                        </div>
+                    </div>
+
+                    <!-- Image URL -->
+                    <div style="margin-bottom: 40px;">
+                        <label for="image_url" style="display: block; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">🖼️</div>
+                            Featured Image URL
+                        </label>
+                        <input type="url" id="image_url" name="image_url" style="width: 100%; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-weight: 500; color: #374151; background: white; transition: all 0.2s ease;" placeholder="https://example.com/image.jpg">
+                        <div style="margin-top: 8px; font-size: 0.9rem; color: #64748b;">
+                            <span>📌 Optional: Add an image to make your article more engaging</span>
+                        </div>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div style="margin-bottom: 32px; padding: 20px; background: linear-gradient(135deg, #f8fafc, #ffffff); border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <h3 style="margin: 0 0 16px 0; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #ec4899, #be185d); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">👁️</div>
+                            Article Preview
+                        </h3>
+                        <div id="preview-content" style="font-size: 0.9rem; color: #64748b; font-style: italic;">
+                            Start typing to see a preview of your article...
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div style="text-align: center; padding-top: 20px;">
+                        <button type="submit" style="background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; padding: 18px 36px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; transition: all 0.2s ease; box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3); min-width: 200px; justify-content: center;">
+                            <span style="font-size: 1.2rem;">📰</span>
+                            Publish Article
+                            <span style="font-size: 1rem;">→</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div style="margin-bottom: 15px;">
-            <label for="content" style="display: block; font-weight: 600; margin-bottom: 5px;">Content</label>
-            <textarea id="content" name="content" rows="8" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
-        </div>
-        <div style="margin-bottom: 15px;">
-            <label for="image_url" style="display: block; font-weight: 600; margin-bottom: 5px;">Image URL</label>
-            <input type="url" id="image_url" name="image_url" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-        </div>
-        <button type="submit" style="background: #8b5cf6; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.3s ease;">Add Article</button>
-    </form>
+    </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Back button hover effect
+        const backButton = document.querySelector('a[href*="news.news_list"]');
+        if (backButton) {
+            backButton.addEventListener('mouseenter', function() {
+                this.style.background = 'rgba(139, 92, 246, 0.2)';
+                this.style.transform = 'translateX(-4px)';
+            });
+            
+            backButton.addEventListener('mouseleave', function() {
+                this.style.background = 'rgba(139, 92, 246, 0.1)';
+                this.style.transform = 'translateX(0)';
+            });
+        }
+
+        // Form inputs focus effects
+        const inputs = document.querySelectorAll('input[type="text"], input[type="url"], textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#06b6d4';
+                this.style.boxShadow = '0 0 0 3px rgba(6, 182, 212, 0.1)';
+                this.style.transform = 'translateY(-1px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#e2e8f0';
+                this.style.boxShadow = 'none';
+                this.style.transform = 'translateY(0)';
+            });
+
+            // Input hover effects
+            input.addEventListener('mouseenter', function() {
+                if (this !== document.activeElement) {
+                    this.style.borderColor = '#cbd5e1';
+                }
+            });
+            
+            input.addEventListener('mouseleave', function() {
+                if (this !== document.activeElement) {
+                    this.style.borderColor = '#e2e8f0';
+                }
+            });
+        });
+
+        // Submit button hover effect
+        const submitButton = document.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.addEventListener('mouseenter', function() {
+                this.style.background = 'linear-gradient(135deg, #0891b2, #0e7490)';
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 8px 20px rgba(6, 182, 212, 0.4)';
+            });
+            
+            submitButton.addEventListener('mouseleave', function() {
+                this.style.background = 'linear-gradient(135deg, #06b6d4, #0891b2)';
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 16px rgba(6, 182, 212, 0.3)';
+            });
+        }
+
+        // Character counters
+        const summaryField = document.getElementById('summary');
+        const contentField = document.getElementById('content');
+        const summaryCounter = document.getElementById('summary-counter');
+        const contentCounter = document.getElementById('content-counter');
+
+        if (summaryField && summaryCounter) {
+            summaryField.addEventListener('input', function() {
+                const length = this.value.length;
+                const maxLength = 200;
+                summaryCounter.textContent = `${length}/${maxLength} characters`;
+                
+                if (length > maxLength * 0.9) {
+                    summaryCounter.style.color = '#f59e0b';
+                } else {
+                    summaryCounter.style.color = '#64748b';
+                }
+            });
+        }
+
+        if (contentField && contentCounter) {
+            contentField.addEventListener('input', function() {
+                const length = this.value.length;
+                contentCounter.textContent = `${length} characters`;
+                
+                if (length > 1000) {
+                    contentCounter.style.color = '#10b981';
+                } else {
+                    contentCounter.style.color = '#64748b';
+                }
+            });
+        }
+
+        // Live preview functionality
+        const titleField = document.getElementById('title');
+        const previewContent = document.getElementById('preview-content');
+
+        function updatePreview() {
+            const title = titleField.value.trim();
+            const summary = summaryField.value.trim();
+            const content = contentField.value.trim();
+
+            if (title || summary || content) {
+                let preview = '';
+                if (title) preview += `<strong style="color: #1a1a1a; font-size: 1.1rem;">${title}</strong><br><br>`;
+                if (summary) preview += `<em style="color: #64748b;">${summary}</em><br><br>`;
+                if (content) preview += `<div style="color: #374151;">${content.substring(0, 200)}${content.length > 200 ? '...' : ''}</div>`;
+                
+                previewContent.innerHTML = preview;
+                previewContent.style.fontStyle = 'normal';
+            } else {
+                previewContent.textContent = 'Start typing to see a preview of your article...';
+                previewContent.style.fontStyle = 'italic';
+            }
+        }
+
+        [titleField, summaryField, contentField].forEach(field => {
+            if (field) {
+                field.addEventListener('input', updatePreview);
+            }
+        });
+
+        // Smooth animations for form sections
+        const formSections = document.querySelectorAll('form > div');
+        formSections.forEach((section, index) => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                section.style.opacity = '1';
+                section.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+
+        // Image URL validation
+        const imageUrlField = document.getElementById('image_url');
+        if (imageUrlField) {
+            imageUrlField.addEventListener('blur', function() {
+                const url = this.value.trim();
+                if (url && !url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) {
+                    this.style.borderColor = '#f59e0b';
+                    // You could add a warning message here
+                } else {
+                    this.style.borderColor = '#e2e8f0';
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

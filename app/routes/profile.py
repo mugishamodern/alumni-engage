@@ -12,16 +12,12 @@ from flask_login import login_required, current_user
 from app.utils.notifications import get_notification_preferences, set_notification_preference
 from app.models.notification import NotificationType
 from app.models import User, Job, Event, Testimonial, News, Message, RSVP
-from flask import Blueprint, render_template, redirect, url_for, flash, request
-from flask_login import login_required, current_user
 from app import db
 from app.utils.forms import ProfileForm
-from app.models import User
 
 bp = Blueprint('profile', __name__)
 
 __all__ = ['bp']
-
 
 @bp.route('/profile')
 @login_required
@@ -69,15 +65,13 @@ def edit():
         # Profile image upload handling
         if 'profile_image' in request.files:
             file = request.files['profile_image']
-            if file and allowed_file(file.filename):
+            if file and file.filename and '.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}:
                 filename = secure_filename(file.filename)
-                # Optionally, prepend user id or username to filename to avoid collisions
                 filename = f"user_{user.id}_" + filename
-                upload_path = os.path.join(UPLOAD_FOLDER)
+                upload_path = os.path.join('app', 'static', 'uploads')
                 os.makedirs(upload_path, exist_ok=True)
                 file.save(os.path.join(upload_path, filename))
                 user.profile_image = filename
-        from app import db
         db.session.commit()
         flash('Profile updated successfully!', 'success')
         return redirect(url_for('profile.index'))
@@ -94,7 +88,6 @@ def notification_preferences():
         return redirect(url_for('profile.notification_preferences'))
     preferences = get_notification_preferences(current_user.id)
     return render_template('profile/preferences.html', preferences=preferences)
-    return redirect(url_for('profile.edit_profile'))
 
 @bp.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
@@ -110,11 +103,7 @@ def edit_profile():
         user.current_job_title = form.current_job_title.data
         user.location = form.location.data
         user.bio = form.bio.data
-        # Handle profile_image if needed
         db.session.commit()
         flash('Your profile has been updated.', 'success')
         return redirect(url_for('profile.edit_profile'))
     return render_template('profile/edit.html', title='Edit Profile', form=form)
-
-
-

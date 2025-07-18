@@ -1,17 +1,144 @@
 {% extends "base.html" %}
+
 {% block title %}Notifications{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-    <h2 class="mb-4">Notifications</h2>
-    <div class="list-group">
-        {% for n in notifications %}
-        <a href="{{ n.link or '#' }}" class="list-group-item list-group-item-action{% if not n.is_read %} fw-bold{% endif %}">
-            {{ n.message }}<br>
-            <small class="text-muted">{{ n.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
-        </a>
-        {% else %}
-        <div class="alert alert-info">No notifications found.</div>
-        {% endfor %}
+<!-- Notifications Section -->
+<section style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); min-height: 100vh; padding: 80px 0;">
+    <div style="max-width: 800px; margin: 0 auto; padding: 0 20px;">
+        
+        <!-- Header -->
+        <div style="margin-bottom: 40px; text-align: center;">
+            <div style="display: inline-flex; align-items: center; gap: 16px; background: white; padding: 20px 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0;">
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                    🔔
+                </div>
+                <h2 style="margin: 0; font-size: 2rem; font-weight: 600; color: #1a1a1a;">Notifications</h2>
+            </div>
+        </div>
+
+        <!-- Notifications List -->
+        <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0;">
+            {% for n in notifications %}
+            <a href="{{ n.link or '#' }}" style="display: block; padding: 24px 32px; border-bottom: 1px solid #f1f5f9; text-decoration: none; color: inherit; transition: all 0.2s ease; position: relative; overflow: hidden;{% if not n.is_read %} background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(6, 182, 212, 0.05));{% endif %}">
+                
+                <!-- Unread indicator -->
+                {% if not n.is_read %}
+                <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(135deg, #8b5cf6, #06b6d4);"></div>
+                {% endif %}
+                
+                <!-- Notification content -->
+                <div style="display: flex; align-items: flex-start; gap: 16px;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #f8fafc, #ffffff); border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                        <div style="width: 8px; height: 8px; background: {% if not n.is_read %}linear-gradient(135deg, #8b5cf6, #06b6d4){% else %}#cbd5e1{% endif %}; border-radius: 50%;"></div>
+                    </div>
+                    
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-size: 1rem; {% if not n.is_read %}font-weight: 600; color: #1a1a1a;{% else %}font-weight: 500; color: #374151;{% endif %} line-height: 1.5; margin-bottom: 8px;">
+                            {{ n.message }}
+                        </div>
+                        <div style="font-size: 0.9rem; color: #64748b; display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 0.8rem;">📅</span>
+                            {{ n.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </div>
+                    </div>
+                    
+                    <!-- Arrow indicator -->
+                    <div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #cbd5e1; font-size: 0.9rem; transition: all 0.2s ease;">
+                        →
+                    </div>
+                </div>
+            </a>
+            {% else %}
+            <div style="padding: 60px 32px; text-align: center;">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f8fafc, #ffffff); border: 2px solid #e2e8f0; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; color: #8b5cf6; font-size: 2rem;">
+                    🔔
+                </div>
+                <h3 style="margin: 0 0 12px 0; font-size: 1.3rem; font-weight: 600; color: #1a1a1a;">No notifications yet</h3>
+                <p style="margin: 0; font-size: 1rem; color: #64748b; line-height: 1.5;">You're all caught up! We'll notify you when there are new updates.</p>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
-{% endblock %} 
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Notification item hover effects
+        const notificationItems = document.querySelectorAll('a[href]');
+        notificationItems.forEach(item => {
+            if (item.getAttribute('href') !== '#') {
+                item.addEventListener('mouseenter', function() {
+                    this.style.background = 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(6, 182, 212, 0.08))';
+                    this.style.transform = 'translateX(4px)';
+                    
+                    // Animate arrow
+                    const arrow = this.querySelector('div:last-child');
+                    if (arrow) {
+                        arrow.style.color = '#8b5cf6';
+                        arrow.style.transform = 'translateX(2px)';
+                    }
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    const isUnread = this.querySelector('div[style*="width: 4px"]');
+                    if (isUnread) {
+                        this.style.background = 'linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(6, 182, 212, 0.05))';
+                    } else {
+                        this.style.background = 'transparent';
+                    }
+                    this.style.transform = 'translateX(0)';
+                    
+                    // Reset arrow
+                    const arrow = this.querySelector('div:last-child');
+                    if (arrow) {
+                        arrow.style.color = '#cbd5e1';
+                        arrow.style.transform = 'translateX(0)';
+                    }
+                });
+            }
+        });
+
+        // Smooth animations for notification items
+        const notifications = document.querySelectorAll('a[href]');
+        notifications.forEach((notification, index) => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(20px)';
+            notification.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+
+        // Header animation
+        const header = document.querySelector('div[style*="display: inline-flex"]');
+        if (header) {
+            header.style.opacity = '0';
+            header.style.transform = 'translateY(-20px)';
+            header.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                header.style.opacity = '1';
+                header.style.transform = 'translateY(0)';
+            }, 200);
+        }
+
+        // Empty state animation
+        const emptyState = document.querySelector('div[style*="padding: 60px 32px"]');
+        if (emptyState) {
+            emptyState.style.opacity = '0';
+            emptyState.style.transform = 'translateY(20px)';
+            emptyState.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                emptyState.style.opacity = '1';
+                emptyState.style.transform = 'translateY(0)';
+            }, 400);
+        }
+    });
+</script>
+{% endblock %}

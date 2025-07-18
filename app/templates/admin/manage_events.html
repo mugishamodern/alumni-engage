@@ -1,48 +1,431 @@
-{% extends 'base.html' %}
-{% block title %}Manage Events{% endblock %}
-{% block content %}
-<div class="container" style="max-width: 1100px; margin: 0 auto; padding: 40px 0;">
-    <h1 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 32px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Manage Events</h1>
-    <div style="margin-bottom: 32px; text-align: right;">
-        <a href="{{ url_for('events.create_event') }}" class="btn" style="background: linear-gradient(135deg, #8b5cf6, #06b6d4); color: white; padding: 12px 28px; border-radius: 10px; font-weight: 600; text-decoration: none;">+ Create Event</a>
-    </div>
-    {% if events.items|length == 0 %}
-        <div style="background: #f8fafc; border-radius: 16px; padding: 40px; text-align: center; border: 1px dashed #e2e8f0; color: #64748b;">
-            <div style="font-size: 2.5rem; margin-bottom: 12px;">📅</div>
-            <div style="font-size: 1.3rem; font-weight: 600; margin-bottom: 8px;">No events found</div>
-            <div style="font-size: 1rem; color: #94a3b8;">Start by creating a new event.</div>
-        </div>
-    {% else %}
-    <div style="display: grid; gap: 28px;">
-        {% for event in events.items %}
-        <div style="background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; padding: 28px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px;">
-            <div style="flex: 1; min-width: 0;">
-                <div style="font-size: 1.2rem; font-weight: 700; color: #1a1a1a; margin-bottom: 4px;">{{ event.title }}</div>
-                <div style="color: #64748b; font-size: 1rem; margin-bottom: 2px;">{{ event.venue }}</div>
-                <div style="color: #94a3b8; font-size: 0.95rem;">{{ event.event_date.strftime('%b %d, %Y at %I:%M %p') }}</div>
-                <div style="margin-top: 8px;">
-                    <span style="background: #e0e7ff; color: #6366f1; padding: 4px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 500;">{{ 'Active' if event.is_active else 'Inactive' }}</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Manage Events - Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #fafafa;
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .sidebar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #8b5cf6;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 20px;
+            margin-bottom: 12px;
+        }
+
+        .nav-item {
+            margin-bottom: 2px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-radius: 0;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #8b5cf6;
+            background: #f3f4f6;
+        }
+
+        .nav-link.active {
+            color: #8b5cf6;
+            background: #f3f4f6;
+            border-right: 2px solid #8b5cf6;
+        }
+
+        .nav-link-icon {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 40px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        /* Events Table */
+        .events-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+
+        .events-header {
+            background: #8b5cf6;
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .events-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .events-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .events-table thead {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .events-table th {
+            padding: 16px 24px;
+            text-align: left;
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .events-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #1a1a1a;
+            font-size: 0.875rem;
+        }
+
+        .events-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .events-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .event-title {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .event-venue {
+            color: #6b7280;
+        }
+
+        .event-date {
+            color: #6b7280;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-view {
+            background: #f3e8ff;
+            color: #8b5cf6;
+        }
+
+        .btn-view:hover {
+            background: #e0d7ff;
+        }
+
+        .btn-edit {
+            background: #fef9c3;
+            color: #f59e0b;
+        }
+
+        .btn-edit:hover {
+            background: #fce588;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .btn-delete:hover {
+            background: #fbb6b6;
+        }
+
+        /* Pagination */
+        .pagination {
+            padding: 20px 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .pagination a {
+            background: #8b5cf6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pagination a:hover {
+            background: #7c3aed;
+        }
+
+        .pagination a:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination span {
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-text {
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .events-table {
+                font-size: 0.8rem;
+            }
+            
+            .events-table th,
+            .events-table td {
+                padding: 12px;
+            }
+            
+            .event-actions {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        {% include 'admin/_sidebar.html' %}
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Manage Events</h1>
+                <p class="page-subtitle">View and manage all events in your platform</p>
+            </div>
+
+            <div class="events-container">
+                <div class="events-header">
+                    <h2><span>📅</span> All Events</h2>
+                    <a href="{{ url_for('events.create_event') }}" class="btn btn-view" style="padding: 8px 16px; border-radius: 6px; font-weight: 600; text-decoration: none;">+ Create Event</a>
                 </div>
+                
+                {% if events.items %}
+                <table class="events-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Venue</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events.items %}
+                        <tr>
+                            <td>
+                                <div class="event-title">{{ event.title }}</div>
+                            </td>
+                            <td class="event-venue">{{ event.venue }}</td>
+                            <td class="event-date">{{ event.event_date.strftime('%b %d, %Y at %I:%M %p') }}</td>
+                            <td>
+                                {% if event.is_active %}
+                                <span class="status-badge status-active">
+                                    <span>●</span> Active
+                                </span>
+                                {% else %}
+                                <span class="status-badge status-inactive">
+                                    <span>●</span> Inactive
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="event-actions">
+                                    <a href="{{ url_for('events.event_detail', event_id=event.id) }}" class="btn btn-view" title="View">View</a>
+                                    <a href="{{ url_for('events.edit_event', event_id=event.id) }}" class="btn btn-edit" title="Edit">Edit</a>
+                                    <form method="post" action="{{ url_for('events.delete_event', event_id=event.id) }}" style="display:inline;">
+                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this event?');" class="btn btn-delete">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">📅</div>
+                    <div class="empty-state-title">No Events Found</div>
+                    <div class="empty-state-text">There are no events created in the system yet.</div>
+                </div>
+                {% endif %}
+
+                {% if events.items %}
+                <div class="pagination">
+                    {% if events.has_prev %}
+                    <a href="{{ url_for('admin.manage_events', page=events.prev_num) }}">
+                        <span>←</span> Previous
+                    </a>
+                    {% endif %}
+                    
+                    <span>Page {{ events.page }} of {{ events.pages }}</span>
+                    
+                    {% if events.has_next %}
+                    <a href="{{ url_for('admin.manage_events', page=events.next_num) }}">
+                        Next <span>→</span>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
-            <div style="display: flex; gap: 12px;">
-                <a href="{{ url_for('events.event_detail', event_id=event.id) }}" class="btn" style="background: #f3e8ff; color: #8b5cf6; padding: 10px 18px; border-radius: 8px; font-weight: 600; text-decoration: none;">View</a>
-                <a href="{{ url_for('events.edit_event', event_id=event.id) }}" class="btn" style="background: #fef9c3; color: #f59e0b; padding: 10px 18px; border-radius: 8px; font-weight: 600; text-decoration: none;">Edit</a>
-                <form method="post" action="{{ url_for('events.delete_event', event_id=event.id) }}" style="display:inline;">
-                    <button type="submit" onclick="return confirm('Are you sure you want to delete this event?');" style="background: #fee2e2; color: #ef4444; padding: 10px 18px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Delete</button>
-                </form>
-            </div>
-        </div>
-        {% endfor %}
+        </main>
     </div>
-    <div style="margin-top: 32px; text-align: center;">
-        {% if events.has_prev %}
-            <a href="{{ url_for('admin.manage_events', page=events.prev_num) }}" style="margin-right: 12px; color: #8b5cf6; text-decoration: none; font-weight: 500;">&larr; Prev</a>
-        {% endif %}
-        <span style="color: #64748b; font-size: 1rem;">Page {{ events.page }} of {{ events.pages }}</span>
-        {% if events.has_next %}
-            <a href="{{ url_for('admin.manage_events', page=events.next_num) }}" style="margin-left: 12px; color: #8b5cf6; text-decoration: none; font-weight: 500;">Next &rarr;</a>
-        {% endif %}
-    </div>
-    {% endif %}
-</div>
-{% endblock %} 
+</body>
+</html>

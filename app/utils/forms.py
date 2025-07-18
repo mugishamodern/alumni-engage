@@ -102,4 +102,12 @@ class TestimonialForm(FlaskForm):
     content = TextAreaField('Your Experience', validators=[DataRequired(), Length(min=50)])
     rating = IntegerField('Rating (1-5)', validators=[DataRequired()])
     
+class EditProfileForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=50)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
+    bio = TextAreaField('Bio', validators=[Length(max=500)])
+    current_job = StringField('Current Job', validators=[Length(max=100)])
+    address = StringField('Address', validators=[Length(max=200)])
+    submit = SubmitField('Update Profile')
+    
 

@@ -59,3 +59,5 @@ requirements.txt
 alumni_env/
 env/
 psycopg2_binary-2.9.10-cp313-cp313-win_amd64.whl
+*.pyc
+__pycache__/
