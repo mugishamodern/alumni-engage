@@ -31,7 +31,7 @@ def event_list():
 @bp.route('/<int:event_id>', methods=['GET', 'POST'])
 def event_detail(event_id):
     event = Event.query.get_or_404(event_id)
-    form = RSVPForm()
+    form = RSVPForm(request.form)
     
     if form.validate_on_submit():
         if not current_user.is_authenticated:
@@ -41,17 +41,17 @@ def event_detail(event_id):
         rsvp = RSVP.query.filter_by(user_id=current_user.id, event_id=event.id).first()
         if rsvp:
             rsvp.status = form.status.data
-            rsvp.notes = form.notes.data
+            rsvp.notes = form.notes.data if hasattr(form, 'notes') else None
         else:
             rsvp = RSVP(
                 user_id=current_user.id,
                 event_id=event.id,
                 status=form.status.data,
-                notes=form.notes.data
+                notes=form.notes.data if hasattr(form, 'notes') else None
             )
             db.session.add(rsvp)
         db.session.commit()
-        # Create notification for RSVP (user)
+        # Create notification for RSVP
         create_notification(
             user_id=current_user.id,
             message=f"You RSVP'd to {event.title} as {form.status.data}.",

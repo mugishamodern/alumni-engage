@@ -1,47 +1,539 @@
-{% extends 'admin/dashboard.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-{% block content %}
-<div class="content">
-    <h1>Manage Users</h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Year of Graduation</th>
-                <th>Current Job</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users.items %}
-            <tr>
-                <td>{{ user.first_name }} {{ user.last_name }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.graduation_year or 'N/A' }}</td>
-                <td>{{ user.current_job_title or 'N/A' }}</td>
-                <td>
-                    {% if user.is_active %}
-                    <a href="{{ url_for('admin.deactivate_user', user_id=user.id) }}" class="btn btn-warning btn-sm">Deactivate</a>
-                    {% else %}
-                    <a href="{{ url_for('admin.activate_user', user_id=user.id) }}" class="btn btn-success btn-sm">Activate</a>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #fafafa;
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .sidebar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #8b5cf6;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 20px;
+            margin-bottom: 12px;
+        }
+
+        .nav-item {
+            margin-bottom: 2px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-radius: 0;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #8b5cf6;
+            background: #f3f4f6;
+        }
+
+        .nav-link.active {
+            color: #8b5cf6;
+            background: #f3f4f6;
+            border-right: 2px solid #8b5cf6;
+        }
+
+        .nav-link-icon {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 40px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        /* Users Table */
+        .users-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+
+        .users-header {
+            background: #8b5cf6;
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .users-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table thead {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .users-table th {
+            padding: 16px 24px;
+            text-align: left;
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .users-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #1a1a1a;
+            font-size: 0.875rem;
+        }
+
+        .users-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .users-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .user-info {
+            color: #6b7280;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7c3aed;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        /* Pagination */
+        .pagination {
+            padding: 20px 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .pagination a {
+            background: #8b5cf6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pagination a:hover {
+            background: #7c3aed;
+        }
+
+        .pagination a:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination span {
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-text {
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .users-table {
+                font-size: 0.8rem;
+            }
+            
+            .users-table th,
+            .users-table td {
+                padding: 12px;
+            }
+            
+            .user-actions {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        {% include 'admin/_sidebar.html' %}
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Manage Users</h1>
+                <p class="page-subtitle">View and manage all registered users in your platform</p>
+            </div>
+
+            <div class="users-container">
+                <div class="users-header">
+                    <h2><span>👥</span> All Users</h2>
+                </div>
+                
+                {% if users.items %}
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Year of Graduation</th>
+                            <th>Current Job</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users.items %}
+                        <tr>
+                            <td>
+                                <div class="user-name">{{ user.first_name }} {{ user.last_name }}</div>
+                            </td>
+                            <td class="user-info">{{ user.graduation_year or 'N/A' }}</td>
+                            <td class="user-info">{{ user.current_job_title or 'N/A' }}</td>
+                            <td>
+                                {% if user.is_active %}
+                                <span class="status-badge status-active">
+                                    <span>●</span> Active
+                                </span>
+                                {% else %}
+                                <span class="status-badge status-inactive">
+                                    <span>●</span> Inactive
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="user-actions">
+                                    {% if user.is_active %}
+                                    <a href="{{ url_for('admin.deactivate_user', user_id=user.id) }}" class="btn btn-warning" title="Deactivate">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="6" y="4" width="4" height="16"/>
+                                            <rect x="14" y="4" width="4" height="16"/>
+                                        </svg>
+                                    </a>
+                                    {% else %}
+                                    <a href="{{ url_for('admin.activate_user', user_id=user.id) }}" class="btn btn-success" title="Activate">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polygon points="5,3 19,12 5,21 5,3"/>
+                                        </svg>
+                                    </a>
+                                    {% endif %}
+                                    <a href="{{ url_for('messages.compose', recipient_id=user.id) }}" class="btn btn-secondary" title="Message">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/>
+                                        </svg>
+                                    </a>
+                                    <a href="{{ url_for('admin.delete_user', user_id=user.id) }}" 
+                                       class="btn btn-danger" 
+                                       title="Delete"
+                                       onclick="return confirm('Are you sure you want to delete this user? This action cannot be undone.');">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="3,6 5,6 21,6"/>
+                                            <path d="m19,6v14a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6m3,0V4a2,2 0 0,1 2-2h4a2,2 0 0,1 2,2v2"/>
+                                            <line x1="10" y1="11" x2="10" y2="17"/>
+                                            <line x1="14" y1="11" x2="14" y2="17"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">👥</div>
+                    <div class="empty-state-title">No Users Found</div>
+                    <div class="empty-state-text">There are no users registered in the system yet.</div>
+                </div>
+                {% endif %}
+
+                {% if users.items %}
+                <div class="pagination">
+                    {% if users.has_prev %}
+                    <a href="{{ url_for('admin.manage_users', page=users.prev_num) }}">
+                        <span>←</span> Previous
+                    </a>
                     {% endif %}
-                    <a href="{{ url_for('admin.delete_user', user_id=user.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
-                    <button class="btn btn-secondary btn-sm" disabled>Message</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <div class="pagination">
-        {% if users.has_prev %}
-        <a href="{{ url_for('admin.manage_users', page=users.prev_num) }}">Previous</a>
-        {% endif %}
-        <span>Page {{ users.page }} of {{ users.pages }}</span>
-        {% if users.has_next %}
-        <a href="{{ url_for('admin.manage_users', page=users.next_num) }}">Next</a>
-        {% endif %}
+                    
+                    <span>Page {{ users.page }} of {{ users.pages }}</span>
+                    
+                    {% if users.has_next %}
+                    <a href="{{ url_for('admin.manage_users', page=users.next_num) }}">
+                        Next <span>→</span>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </main>
     </div>
-</div>
-{% endblock %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Table row hover effects
+            const tableRows = document.querySelectorAll('.users-table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.background = '#f9fafb';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.background = '';
+                });
+            });
+
+            // Mobile sidebar toggle
+            const createMobileToggle = () => {
+                if (window.innerWidth <= 768) {
+                    let mobileToggle = document.querySelector('.mobile-toggle');
+                    if (!mobileToggle) {
+                        mobileToggle = document.createElement('button');
+                        mobileToggle.className = 'mobile-toggle';
+                        mobileToggle.innerHTML = '☰';
+                        mobileToggle.style.cssText = `
+                            position: fixed;
+                            top: 20px;
+                            left: 20px;
+                            z-index: 1001;
+                            background: white;
+                            border: 1px solid #e5e7eb;
+                            border-radius: 6px;
+                            width: 40px;
+                            height: 40px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 1.2rem;
+                            cursor: pointer;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                        `;
+                        document.body.appendChild(mobileToggle);
+                        
+                        mobileToggle.addEventListener('click', () => {
+                            const sidebar = document.querySelector('.sidebar');
+                            sidebar.classList.toggle('open');
+                        });
+                    }
+                }
+            };
+            
+            createMobileToggle();
+            window.addEventListener('resize', createMobileToggle);
+        });
+    </script>
+</body>
+</html>

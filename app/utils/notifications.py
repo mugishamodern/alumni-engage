@@ -54,10 +54,4 @@ def get_notification_preferences(user_id):
             db.session.add(pref)
             prefs.append(pref)
     db.session.commit()
-    return prefs
-
-def initialize_all_user_notification_preferences():
-    users = User.query.all()
-    for user in users:
-        get_notification_preferences(user.id)
-    db.session.commit() 
+    return prefs 

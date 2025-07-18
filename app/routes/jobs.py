@@ -51,23 +51,13 @@ def create():
             )
             db.session.add(job)
             db.session.commit()
-            # Create notification for job posting (poster)
+            # Create notification for job posting
             create_notification(
                 user_id=current_user.id,
                 message=f"You posted a new job: {job.title} at {job.company}.",
                 notif_type=NotificationType.JOB,
                 link=url_for('jobs.detail', id=job.id)
             )
-            # Notify all other users
-            from app.models.user import User
-            users = User.query.filter(User.id != current_user.id).all()
-            for user in users:
-                create_notification(
-                    user_id=user.id,
-                    message=f"New job posted: {job.title} at {job.company}.",
-                    notif_type=NotificationType.JOB,
-                    link=url_for('jobs.detail', id=job.id)
-                )
             flash('Job posting created successfully.', 'success')
             logger.info(f"Job created: {job.title} by user {current_user.username}")
             return redirect(url_for('jobs.index'))

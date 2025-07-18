@@ -38,23 +38,13 @@ def add():
         )
         db.session.add(news_item)
         db.session.commit()
-        # Create notification for news post (poster)
+        # Create notification for news post
         create_notification(
             user_id=current_user.id,
             message=f"You published a news article: {news_item.title}.",
             notif_type=NotificationType.NEWS,
             link=url_for('news.detail', id=news_item.id)
         )
-        # Notify all other users
-        from app.models.user import User
-        users = User.query.filter(User.id != current_user.id).all()
-        for user in users:
-            create_notification(
-                user_id=user.id,
-                message=f"New news article published: {news_item.title}.",
-                notif_type=NotificationType.NEWS,
-                link=url_for('news.detail', id=news_item.id)
-            )
         flash('News article added successfully.', 'success')
         return redirect(url_for('news.index'))
     return render_template('news/add.html')
