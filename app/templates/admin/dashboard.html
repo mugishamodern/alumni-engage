@@ -657,11 +657,7 @@
                         </div>
                         <div class="content-card-body">
                             {% for user in recent_users %}
-<<<<<<< HEAD
-                            <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="list-item">
-=======
                             <a href="{{ url_for('admin.delete_user', user_id=user.id) }}" class="list-item">
->>>>>>> b9b87c3fbca43d9799357f6fb1c3f6691d2733a8
                                 <div class="list-item-avatar">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
                                 <div class="list-item-content">
                                     <div class="list-item-title">{{ user.first_name }} {{ user.last_name }}</div>
