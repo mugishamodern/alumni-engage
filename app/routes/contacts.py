@@ -35,6 +35,16 @@ def index():
                     notif_type=NotificationType.CONTACT,
                     link=url_for('contacts.index')
                 )
+            # Notify all admins
+            from app.models.user import User
+            admins = User.query.filter_by(is_admin=True).all()
+            for admin in admins:
+                create_notification(
+                    user_id=admin.id,
+                    message=f"New contact submission: {contact.subject} from {contact.name}.",
+                    notif_type=NotificationType.CONTACT,
+                    link=url_for('contacts.index')
+                )
             flash('Your message has been sent successfully.', 'success')
             logger.info(f"New contact submission from {contact.name} ({contact.email})")
             return redirect(url_for('contacts.index'))

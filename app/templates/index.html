@@ -3,6 +3,46 @@
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
     <script src="{{ url_for('static', filename='js/counter.js') }}" defer></script>
+    <style>
+        #notif-list {
+            max-height: 350px;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.08), 0 1.5px 4px rgba(0,0,0,0.04);
+            padding: 10px 0;
+            min-width: 320px;
+        }
+        #notif-list .dropdown-item {
+            display: block;
+            padding: 16px 20px 10px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #1a1a1a;
+            background: none;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.15s, color 0.15s;
+            border-radius: 0;
+            position: relative;
+        }
+        #notif-list .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        #notif-list .dropdown-item:hover {
+            background: #f3f4f6;
+            color: #8b5cf6;
+        }
+        #notif-list .dropdown-item.fw-bold {
+            font-weight: 600;
+        }
+        #notif-list small.text-muted {
+            display: block;
+            margin-top: 4px;
+            color: #94a3b8 !important;
+            font-size: 0.85em;
+            font-weight: 400;
+        }
+    </style>
 {% endblock %}
 
 {% block title %}Alumni Connect - Home{% endblock %}

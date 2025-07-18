@@ -51,13 +51,24 @@ def event_detail(event_id):
             )
             db.session.add(rsvp)
         db.session.commit()
-        # Create notification for RSVP
+        # Create notification for RSVP (user)
         create_notification(
             user_id=current_user.id,
             message=f"You RSVP'd to {event.title} as {form.status.data}.",
             notif_type=NotificationType.RSVP,
             link=url_for('events.event_detail', event_id=event.id)
         )
+        # Notify event organizer if not the same as RSVP-ing user
+        if event.created_by != current_user.id:
+            from app.models.user import User
+            organizer = User.query.get(event.created_by)
+            if organizer:
+                create_notification(
+                    user_id=organizer.id,
+                    message=f"{current_user.first_name} {current_user.last_name} RSVP'd to your event: {event.title} as {form.status.data}.",
+                    notif_type=NotificationType.EVENT,
+                    link=url_for('events.event_detail', event_id=event.id)
+                )
         flash('Your RSVP has been updated', 'success')
         return redirect(url_for('events.event_detail', event_id=event.id))
     
@@ -92,6 +103,16 @@ def create_event():
         try:
             db.session.add(event)
             db.session.commit()
+            # Notify all users except the creator
+            from app.models.user import User
+            users = User.query.filter(User.id != current_user.id).all()
+            for user in users:
+                create_notification(
+                    user_id=user.id,
+                    message=f"New event created: {event.title}.",
+                    notif_type=NotificationType.EVENT,
+                    link=url_for('events.event_detail', event_id=event.id)
+                )
             flash('Event created successfully!', 'success')
             return redirect(url_for('events.event_detail', event_id=event.id))
         except Exception as e:

@@ -113,6 +113,15 @@ def compose(recipient_id):
             )
             db.session.add(message)
             db.session.commit()
+            # Notify recipient
+            from app.utils.notifications import create_notification
+            from app.models.notification import NotificationType
+            create_notification(
+                user_id=recipient.id,
+                message=f"You have received a new message from {current_user.first_name} {current_user.last_name}.",
+                notif_type=NotificationType.MESSAGE,
+                link=url_for('messages.conversation', user_id=current_user.id)
+            )
             flash('Message sent!', 'success')
             return redirect(url_for('messages.sent'))
     if getattr(current_user, 'is_admin', False):
@@ -171,6 +180,15 @@ def conversation(user_id):
             )
             db.session.add(message)
             db.session.commit()
+            # Notify recipient
+            from app.utils.notifications import create_notification
+            from app.models.notification import NotificationType
+            create_notification(
+                user_id=other_user.id,
+                message=f"You have received a new message from {current_user.first_name} {current_user.last_name}.",
+                notif_type=NotificationType.MESSAGE,
+                link=url_for('messages.conversation', user_id=current_user.id)
+            )
             flash('Reply sent!', 'success')
             return redirect(url_for('messages.conversation', user_id=other_user.id))
     if getattr(current_user, 'is_admin', False):
